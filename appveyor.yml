@@ -25,4 +25,4 @@ build_script:
   - cd build
   - cmake -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\librws\librws-install-dir  -DCMAKE_BUILD_TYPE=Release ..
   - cmake --build . --config Release
-  - ctest
+#  - ctest

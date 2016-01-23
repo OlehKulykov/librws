@@ -29,6 +29,11 @@
 #include <string.h>
 #include "common.h"
 
+#if defined(_MSC_VER)
+// Disable warning 4996, sprintf_s, not all, but this
+#pragma warning(disable : 4996)
+#endif
+
 char * rws_string_copy(const char * str);
 
 char * rws_string_copy_len(const char * str, const size_t len);
