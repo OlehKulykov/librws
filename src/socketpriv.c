@@ -229,7 +229,7 @@ void rws_socket_connect_to_host(_rws_socket * s)
 	struct addrinfo * result = NULL;
 	int ret = -1;
 	struct addrinfo * p = NULL;
-	rws_socket_t sock = INVALID_SOCKET;
+	rws_socket_t sock = RWS_INVALID_SOCKET;
 #if defined(RWS_OS_WINDOWS)
 	unsigned long iMode = 0;
 #endif
@@ -254,7 +254,7 @@ void rws_socket_connect_to_host(_rws_socket * s)
 	while (p != NULL)
 	{
 		sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-		if (sock != INVALID_SOCKET)
+		if (sock != RWS_INVALID_SOCKET)
 		{
 			if (connect(sock, p->ai_addr, p->ai_addrlen) == 0)
 			{
@@ -280,7 +280,7 @@ void rws_socket_connect_to_host(_rws_socket * s)
 
 	freeaddrinfo(result);
 
-	if (s->socket == INVALID_SOCKET)
+	if (s->socket == RWS_INVALID_SOCKET)
 	{
 		s->error = rws_error_new_code_descr(rws_error_code_connect_to_host, "Cant connect to host");
 		s->command = COMMAND_INFORM_DISCONNECTED;
@@ -355,14 +355,14 @@ void rws_socket_resize_received(_rws_socket * s, const size_t size)
 
 void rws_socket_close(_rws_socket * s)
 {
-	if (s->socket != INVALID_SOCKET)
+	if (s->socket != RWS_INVALID_SOCKET)
 	{
 #if defined(RWS_OS_WINDOWS)
 		closesocket(s->socket);
 #else
 		close(s->socket);
 #endif
-		s->socket = INVALID_SOCKET;
+		s->socket = RWS_INVALID_SOCKET;
 		s->is_connected = rws_false;
 	}
 }

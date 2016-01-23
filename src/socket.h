@@ -48,9 +48,10 @@
 
 #if defined(RWS_OS_WINDOWS)
 typedef SOCKET rws_socket_t;
+#define RWS_INVALID_SOCKET INVALID_SOCKET
 #else
 typedef int rws_socket_t;
-#define INVALID_SOCKET -1
+#define RWS_INVALID_SOCKET -1
 #endif
 
 static const char * k_rws_socket_min_http_ver = "1.1";

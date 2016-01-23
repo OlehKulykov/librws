@@ -51,7 +51,7 @@ rws_socket rws_socket_create(void)
 	if (!s) return NULL;
 
 	s->port = -1;
-	s->socket = INVALID_SOCKET;
+	s->socket = RWS_INVALID_SOCKET;
 	s->command = COMMAND_NONE;
 
 #if defined(RWS_THREAD_SAFE)
@@ -148,7 +148,7 @@ void rws_socket_set_receive_buffer_size(rws_socket socket, const unsigned int si
 	unsigned int buffSize = size;
 	int res = 0;
 	if (!s) return;
-	if (s->socket == INVALID_SOCKET) return;
+	if (s->socket == RWS_INVALID_SOCKET) return;
 
 	res = setsockopt(s->socket, SOL_SOCKET, SO_RCVBUF, (char *)&buffSize, sizeof(unsigned int));
 	if (res == 0) return;
@@ -171,7 +171,7 @@ unsigned int rws_socket_get_receive_buffer_size(rws_socket socket)
 {
 	_rws_socket * s = (_rws_socket *)socket;
 	if (!s) return 0;
-	if (s->socket == INVALID_SOCKET) return 0;
+	if (s->socket == RWS_INVALID_SOCKET) return 0;
 	return _rws_socket_get_receive_buffer_size(s->socket);
 }
 
