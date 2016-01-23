@@ -26,55 +26,56 @@
 
 #include <stdio.h>
 
+// check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
 #define RWS_OS_WINDOWS 1
 #endif
 
 
-#if defined(RWS_OS_WINDOWS)
-#if defined(RWS_BUILD)
-// build
-#if defined(__cplusplus) || defined(_cplusplus)
-#define RWS_EXTERN extern "C" __declspec(dllexport)
-#else
-#define RWS_EXTERN extern __declspec(dllexport)
-#endif
-#else
-// use
-#if defined(__cplusplus) || defined(_cplusplus)
-#define RWS_EXTERN extern "C" __declspec(dllimport)
-#else
-#define RWS_EXTERN extern __declspec(dllimport)
-#endif
-#endif
-#endif
-
-
-#if !defined(RWS_EXTERN)
-#if defined(__GNUC__)
-#if (__GNUC__ >= 4)
-#if defined(__cplusplus) || defined(_cplusplus)
-#define RWS_EXTERN extern "C" __attribute__((visibility("default")))
-#else
-#define RWS_EXTERN extern __attribute__((visibility("default")))
-#endif
-#endif
-#endif
-#endif
-
-
-#if !defined(RWS_EXTERN)
+// extern
 #if defined(__cplusplus) || defined(_cplusplus)
 #define RWS_EXTERN extern "C"
 #else
 #define RWS_EXTERN extern
 #endif
+
+
+// attribute
+#if defined(__GNUC__)
+#if (__GNUC__ >= 4)
+#if defined(__cplusplus) || defined(_cplusplus)
+#define RWS_ATTRIB __attribute__((visibility("default")))
+#else
+#define RWS_ATTRIB __attribute__((visibility("default")))
+#endif
+#endif
 #endif
 
 
-#if !defined(RWS_API)
-#define RWS_API(RETYRN_TYPE) RWS_EXTERN RETYRN_TYPE
+// check attrib and define empty if not defined
+#if !defined(RWS_ATTRIB)
+#define RWS_ATTRIB
 #endif
+
+
+// dll api
+#if defined(RWS_OS_WINDOWS)
+#if defined(RWS_BUILD)
+#define RWS_DLL_API __declspec(dllexport)
+#else
+#define RWS_DLL_API __declspec(dllimport)
+#endif
+#endif
+
+
+// check dll api and define empty if not defined
+#if !defined(RWS_DLL_API)
+#define RWS_DLL_API
+#endif
+
+
+// combined lib api
+#define RWS_API(return_type) RWS_EXTERN RWS_ATTRIB RWS_DLL_API return_type
 
 
 // types
