@@ -1,0 +1,29 @@
+version: 0.0.1.{build}
+
+# branches to build
+branches:
+  only:
+  - master
+  - dev
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform:
+  - x86
+  - x64
+
+configuration:
+  - Release
+
+# clone directory
+clone_folder: c:\dev\librws
+
+build:
+
+build_script:
+  - cd c:\dev\librws
+  - md build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\librws\librws-install-dir  -DCMAKE_BUILD_TYPE=Release ..
+  - cmake --build . --config Release
+  - ctest
+
