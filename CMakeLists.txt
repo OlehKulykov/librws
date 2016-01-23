@@ -161,6 +161,9 @@ set(LIBRWS_SOURCES src/common.c
 set(LIBRWS_HEADERS librws.h)
 
 
+add_definitions(-DRWS_BUILD)
+
+
 if(RWS_OPT_SHARED)
 	add_library(rws SHARED ${LIBRWS_SOURCES} ${LIBRWS_HEADERS})
 	if(MSVC)

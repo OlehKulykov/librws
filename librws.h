@@ -30,6 +30,26 @@
 #define RWS_OS_WINDOWS 1
 #endif
 
+
+#if defined(RWS_OS_WINDOWS)
+#if defined(RWS_BUILD)
+// build
+#if defined(__cplusplus) || defined(_cplusplus)
+#define RWS_EXTERN extern "C" __declspec(dllexport)
+#else
+#define RWS_EXTERN extern __declspec(dllexport)
+#endif
+#else
+// use
+#if defined(__cplusplus) || defined(_cplusplus)
+#define RWS_EXTERN extern "C" __declspec(dllimport)
+#else
+#define RWS_EXTERN extern __declspec(dllimport)
+#endif
+#endif
+#endif
+
+
 #if !defined(RWS_EXTERN)
 #if defined(__GNUC__)
 #if (__GNUC__ >= 4)
@@ -41,6 +61,7 @@
 #endif
 #endif
 #endif
+
 
 #if !defined(RWS_EXTERN)
 #if defined(__cplusplus) || defined(_cplusplus)
