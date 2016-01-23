@@ -100,7 +100,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 #check_include_file("netinet/tcp.h" RWS_HAVE_NETINET_TCP_H)
 #check_include_file("unistd.h" RWS_HAVE_UNISTD_H)
 #check_include_file("fcntl.h" RWS_HAVE_FCNTL_H)
-#check_include_file("pthread.h" RWS_HAVE_PTHREAD_H)
+check_include_file("pthread.h" RWS_HAVE_PTHREAD_H)
 
 message(CMAKE_EXTRA_INCLUDE_FILES ": " ${CMAKE_EXTRA_INCLUDE_FILES})
 
