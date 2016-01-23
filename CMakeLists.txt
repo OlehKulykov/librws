@@ -63,6 +63,13 @@ if(WITH_FPIC_C)
 endif(WITH_FPIC_C)
 
 
+# CXX with -fPIC
+check_cxx_compiler_flag("-fPIC" WITH_FPIC_CXX)
+if(WITH_FPIC_CXX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif(WITH_FPIC_CXX)
+
+
 if(WIN32)
 	add_definitions(-DWIN32)
 	add_definitions(-D_WIN32)

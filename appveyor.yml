@@ -1,4 +1,11 @@
 version: 0.0.1.{build}
+
+environment:
+  matrix:
+    - rws_env_matrix: default
+
+    - rws_env_matrix: no_thread_safe
+      CMAKE_ARGS: -DRWS_OPT_THREAD_SAFE=OFF
       
 # branches to build
 branches:
