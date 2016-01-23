@@ -153,7 +153,6 @@ void rws_thread_sleep(const unsigned int millisec)
 #endif
 }
 
-
 rws_mutex rws_mutex_create_recursive(void)
 {
 #if defined(RWS_OS_WINDOWS)

@@ -39,9 +39,10 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 		unsigned int is_fin = (udata[0] >> 7) & 0x01;
 		unsigned int is_masked = (udata[1] >> 7) & 0x01;
 		const unsigned int payload = udata[1] & 0x7f;
-		size_t header_size = is_masked ? 6 : 2;
+		unsigned int header_size = is_masked ? 6 : 2;
 
-		size_t expected_size = 0, mask_pos = 0, i = 0;
+		unsigned int expected_size = 0, mask_pos = 0;
+		size_t i = 0;
 		_rws_frame * frame = NULL;
 		const unsigned char * actual_udata = NULL;
 		unsigned char * unmasked = NULL;
@@ -83,7 +84,7 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 
 		frame->opcode = opcode;
 		if (is_fin) frame->is_finished = rws_true;
-		frame->header_size = header_size;
+		frame->header_size = (unsigned char)header_size;
 		if (is_masked)
 		{
 			frame->is_masked = rws_true;
@@ -92,7 +93,7 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 
 		if (opcode == rws_opcode_connection_close || opcode == rws_opcode_pong) return frame;
 
-		if (!is_fin || (data_size < (header_size + expected_size)))
+		if (!is_fin || (data_size < (expected_size + header_size)))
 		{
 			frame->is_finished = rws_false;
 			frame->data = rws_malloc(data_size);
@@ -126,7 +127,7 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 	return NULL;
 }
 
-void rws_frame_create_header(_rws_frame * f, unsigned char * header, const unsigned int data_size)
+void rws_frame_create_header(_rws_frame * f, unsigned char * header, const size_t data_size)
 {
 	const unsigned int size = data_size;
 	assert(sizeof(unsigned int) == 4);
