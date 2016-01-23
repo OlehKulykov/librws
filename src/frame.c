@@ -36,8 +36,8 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 		const unsigned char * udata = (const unsigned char *)data;
 
 		const rws_opcode opcode = (rws_opcode)(udata[0] & 0x0f);
-		unsigned int is_fin = (udata[0] >> 7) & 0x01;
-		unsigned int is_masked = (udata[1] >> 7) & 0x01;
+		const unsigned int is_fin = (udata[0] >> 7) & 0x01;
+		const unsigned int is_masked = (udata[1] >> 7) & 0x01;
 		const unsigned int payload = udata[1] & 0x7f;
 		unsigned int header_size = is_masked ? 6 : 2;
 

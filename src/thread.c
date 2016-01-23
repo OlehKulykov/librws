@@ -114,8 +114,7 @@ rws_thread rws_thread_create(rws_thread_funct thread_function, void * user_objec
 {
 	_rws_thread * t = NULL;
 	int res = -1;
-#if defined(RWS_OS_WINDOWS)
-#else
+#if !defined(RWS_OS_WINDOWS)
 	pthread_attr_t attr;
 #endif
 

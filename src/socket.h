@@ -65,13 +65,13 @@ typedef struct _rws_socket_struct
 	char * host;
 	char * path;
 
-	char * sec_ws_accept; //
+	char * sec_ws_accept; // "Sec-WebSocket-Accept" field from handshake
 
 	rws_thread work_thread;
 
 	int command;
 
-	rws_bool is_connected; //
+	rws_bool is_connected; // sock connected + handshake done
 
 	void * user_object;
 	rws_on_socket on_connected;

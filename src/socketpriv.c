@@ -85,15 +85,15 @@ rws_bool rws_socket_recv(_rws_socket * s)
 {
 	int is_reading = 1, error_number = -1, len = -1;
 	char * received = NULL;
-	size_t buff_size = 64, total_len = 0;
-	char buff[64];
+	size_t total_len = 0;
+	char buff[8192];
 
 	rws_error_delete_clean(&s->error);
 	s->received_len = 0;
 
 	while (is_reading)
 	{
-		len = recv(s->socket, buff, buff_size, 0);
+		len = recv(s->socket, buff, 8192, 0);
 		if (len > 0)
 		{
 			total_len += len;
