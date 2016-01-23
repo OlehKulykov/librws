@@ -61,21 +61,21 @@
 // dll api
 #if defined(RWS_OS_WINDOWS)
 #if defined(RWS_BUILD)
-#define RWS_DLL_API __declspec(dllexport)
+#define RWS_DYLIB_API __declspec(dllexport)
 #else
-#define RWS_DLL_API __declspec(dllimport)
+#define RWS_DYLIB_API __declspec(dllimport)
 #endif
 #endif
 
 
 // check dll api and define empty if not defined
-#if !defined(RWS_DLL_API)
-#define RWS_DLL_API
+#if !defined(RWS_DYLIB_API)
+#define RWS_DYLIB_API
 #endif
 
 
 // combined lib api
-#define RWS_API(return_type) RWS_EXTERN RWS_ATTRIB RWS_DLL_API return_type
+#define RWS_API(return_type) RWS_EXTERN RWS_ATTRIB RWS_DYLIB_API return_type
 
 
 // types
