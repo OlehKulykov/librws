@@ -56,7 +56,7 @@
 #endif
 
 
-#pragma mark - types
+// types
 
 /**
  @brief Boolean type.
@@ -90,7 +90,7 @@ typedef void (*rws_on_socket)(rws_socket socket);
 
 typedef void (*rws_on_socket_recvd_text)(rws_socket socket, const char * text, const unsigned int length);
 
-#pragma mark - socket
+// socket
 
 /**
  @brief Create new socket.
@@ -141,7 +141,7 @@ RWS_API(void) rws_socket_set_on_disconnected(rws_socket socket, rws_on_socket ca
 
 RWS_API(void) rws_socket_set_on_received_text(rws_socket socket, rws_on_socket_recvd_text callback);
 
-#pragma mark - error
+// error
 
 typedef enum _rws_error_code
 {
@@ -168,7 +168,7 @@ RWS_API(int) rws_error_get_http_error(rws_error error);
 RWS_API(const char *) rws_error_get_description(rws_error error);
 
 
-#pragma mark - mutex
+// mutex
 
 RWS_API(rws_mutex) rws_mutex_create_recursive(void);
 
@@ -179,7 +179,7 @@ RWS_API(void) rws_mutex_unlock(rws_mutex mutex);
 RWS_API(void) rws_mutex_delete(rws_mutex mutex);
 
 
-#pragma mark - thread
+// thread
 
 RWS_API(rws_thread) rws_thread_create(rws_thread_funct thread_function, void * user_object);
 
