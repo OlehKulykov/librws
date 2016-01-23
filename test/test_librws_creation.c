@@ -36,11 +36,6 @@
 #endif
 
 
-#if defined(RWS_HAVE_LIBRWS_CONFIG_H)
-#include "librws_config.h"
-#endif
-
-
 #if defined(CMAKE_BUILD)
 #undef CMAKE_BUILD
 #endif

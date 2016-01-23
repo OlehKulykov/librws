@@ -36,23 +36,19 @@
 #include <librws.h>
 #endif
 
-#if defined(RWS_HAVE_LIBRWS_CONFIG_H)
-#include "librws_config.h"
-#endif
-
-
 #if defined(CMAKE_BUILD)
 #undef CMAKE_BUILD
 #endif
 
 int main(int argc, char* argv[])
 {
-	rws_socket socket = rws_socket_create();
-	assert(socket);
-
 	const char * scheme = "ws";
 	const char * host = "echo.websocket.org";
 	const char * path = "/";
+	
+	rws_socket socket = rws_socket_create();
+	assert(socket);
+
 
 	rws_socket_set_scheme(socket, scheme);								printf("%i\n", (int)__LINE__);
 	assert(strcmp(rws_socket_get_scheme(socket), scheme) == 0);			printf("%i\n", (int)__LINE__);
