@@ -39,13 +39,12 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 		unsigned int is_fin = (udata[0] >> 7) & 0x01;
 		unsigned int is_masked = (udata[1] >> 7) & 0x01;
 		const unsigned int payload = udata[1] & 0x7f;
-		size_t expected_size = 0;
-		size_t mask_pos = 0;
 		size_t header_size = is_masked ? 6 : 2;
+
+		size_t expected_size = 0, mask_pos = 0, i = 0;
 		_rws_frame * frame = NULL;
 		const unsigned char * actual_udata = NULL;
 		unsigned char * unmasked = NULL;
-		size_t i;
 
 		switch (payload)
 		{
@@ -171,7 +170,7 @@ void rws_frame_fill_with_send_data(_rws_frame * f, const void * data, const size
 	unsigned char header[16];
 	unsigned char * frame = NULL;
 	unsigned char mask[4];
-	size_t i;
+	size_t i = 0;
 
 	rws_frame_create_header(f, header, data_size);
 	f->data_size = data_size + f->header_size;
