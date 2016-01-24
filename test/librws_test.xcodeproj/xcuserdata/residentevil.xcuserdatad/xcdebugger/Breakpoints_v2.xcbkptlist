@@ -25,13 +25,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../src/frame.c"
-            timestampString = "475272505.374849"
+            filePath = "../src/socketpriv.c"
+            timestampString = "475287000.312898"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "rws_frame_create_with_recv_data()"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
+            landmarkName = "rws_socket_process_ping_frame()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/socketpriv.c"
+            timestampString = "475286996.762983"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
+            landmarkName = "rws_socket_process_text_frame()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

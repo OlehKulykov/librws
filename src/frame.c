@@ -178,16 +178,20 @@ void rws_frame_fill_with_send_data(_rws_frame * f, const void * data, const size
 	f->data = rws_malloc(f->data_size);
 	frame = (unsigned char *)f->data;
 	memcpy(frame, header, f->header_size);
-	frame += f->header_size;
-	memcpy(frame, data, data_size);
 
-	if (f->is_masked)
+	if (data) // have data to send
 	{
-		memcpy(mask, &f->mask, 4);
-		for (i = 0; i < data_size; i++)
+		frame += f->header_size;
+		memcpy(frame, data, data_size);
+
+		if (f->is_masked)
 		{
-			*frame = *frame ^ mask[i & 0x3];
-			frame++;
+			memcpy(mask, &f->mask, 4);
+			for (i = 0; i < data_size; i++)
+			{
+				*frame = *frame ^ mask[i & 0x3];
+				frame++;
+			}
 		}
 	}
 	f->is_finished = rws_true;

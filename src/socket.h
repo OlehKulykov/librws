@@ -83,6 +83,7 @@ typedef struct _rws_socket_struct
 	size_t received_len; // length of actualy readed message
 
 	_rws_list * send_frames;
+	_rws_list * recvd_frames;
 
 	_rws_error * error;
 
@@ -101,6 +102,12 @@ rws_bool rws_socket_recv(_rws_socket * s);
 // send raw data to socket
 rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_size);
 
+void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * ping_frame);
+
+void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * ping_frame);
+
+void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame);
+
 void rws_socket_idle_recv(_rws_socket * s);
 
 void rws_socket_idle_send(_rws_socket * s);
@@ -116,6 +123,10 @@ rws_bool rws_socket_create_start_work_thread(_rws_socket * s);
 void rws_socket_close(_rws_socket * s);
 
 void rws_socket_resize_received(_rws_socket * s, const size_t size);
+
+void rws_socket_append_recvd_frames(_rws_socket * s, _rws_frame * frame);
+
+void rws_socket_append_send_frames(_rws_socket * s, _rws_frame * frame);
 
 rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text);
 

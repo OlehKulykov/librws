@@ -126,6 +126,48 @@ rws_bool rws_socket_recv(_rws_socket * s)
 	return rws_true;
 }
 
+void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * text_frame)
+{
+	if (text_frame->is_finished) 
+	{
+		if (text_frame->data && text_frame->data_size) rws_socket_append_recvd_frames(s, text_frame);
+		else rws_frame_delete(text_frame);
+	}
+	// iterate to last unfinished text frame and combine
+
+
+	rws_frame_delete(text_frame);
+}
+
+void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * ping_frame)
+{
+	_rws_frame * pong_frame = rws_frame_create();
+	pong_frame->opcode = rws_opcode_pong;
+	pong_frame->is_masked = rws_true;
+	rws_frame_fill_with_send_data(pong_frame, ping_frame->data, ping_frame->data_size);
+	rws_frame_delete(ping_frame);
+	rws_socket_append_send_frames(s, pong_frame);
+}
+
+void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame)
+{
+	if (frame->data && frame->data_size)
+	{
+		printf("\nReceved frame: <%s>", (char*)frame->data);
+	}
+
+	switch (frame->opcode)
+	{
+		case rws_opcode_ping: rws_socket_process_ping_frame(s, frame); break;
+		case rws_opcode_text_frame: rws_socket_process_text_frame(s, frame); break;
+
+		default:
+			// unprocessed => delete
+			rws_frame_delete(frame);
+			break;
+	}
+}
+
 void rws_socket_idle_recv(_rws_socket * s)
 {
 	_rws_frame * frame = NULL;
@@ -137,12 +179,7 @@ void rws_socket_idle_recv(_rws_socket * s)
 	}
 
 	frame = rws_frame_create_with_recv_data(s->received, s->received_len);
-	if (!frame) return;
-
-	if (frame->data && frame->data_size)
-	{
-		printf("\nReceved frame: <%s>", (char*)frame->data);
-	}
+	if (frame) rws_socket_process_received_frame(s, frame);
 }
 
 void rws_socket_idle_send(_rws_socket * s)
@@ -367,21 +404,25 @@ void rws_socket_close(_rws_socket * s)
 	}
 }
 
-rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text)
+void rws_socket_append_recvd_frames(_rws_socket * s, _rws_frame * frame)
 {
-	size_t len = text ? strlen(text) : 0;
-	_rws_frame * frame = NULL;
 	_rws_node_value frame_list_var;
-
-	if (len <= 0) return rws_false;
-
-	frame = rws_frame_create();
-	frame->is_masked = rws_true;
-	frame->opcode = rws_opcode_text_frame;
-	rws_frame_fill_with_send_data(frame, text, len);
-
 	frame_list_var.object = frame;
+	if (s->recvd_frames)
+	{
+		rws_list_append(s->recvd_frames, frame_list_var);
+	}
+	else
+	{
+		s->recvd_frames = rws_list_create();
+		s->recvd_frames->value = frame_list_var;
+	}
+}
 
+void rws_socket_append_send_frames(_rws_socket * s, _rws_frame * frame)
+{
+	_rws_node_value frame_list_var;
+	frame_list_var.object = frame;
 	if (s->send_frames)
 	{
 		rws_list_append(s->send_frames, frame_list_var);
@@ -391,6 +432,21 @@ rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text)
 		s->send_frames = rws_list_create();
 		s->send_frames->value = frame_list_var;
 	}
+}
+
+rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text)
+{
+	size_t len = text ? strlen(text) : 0;
+	_rws_frame * frame = NULL;
+
+	if (len <= 0) return rws_false;
+
+	frame = rws_frame_create();
+	frame->is_masked = rws_true;
+	frame->opcode = rws_opcode_text_frame;
+	rws_frame_fill_with_send_data(frame, text, len);
+	rws_socket_append_send_frames(s, frame);
+
 	return rws_true;
 }
 

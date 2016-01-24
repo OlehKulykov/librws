@@ -51,7 +51,7 @@ typedef struct _rws_frame_struct
 
 _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t data_size);
 
-// data - should be null, and setted by newly created.
+// data - should be null, and setted by newly created. 'data' & 'data_size' can be null
 void rws_frame_fill_with_send_data(_rws_frame * f, const void * data, const size_t data_size);
 
 _rws_frame * rws_frame_create(void);

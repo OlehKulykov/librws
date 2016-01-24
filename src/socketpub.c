@@ -79,6 +79,7 @@ void rws_socket_delete(rws_socket socket)
 
 	rws_free(s->received);
 	rws_list_delete_clean(&s->send_frames);
+	rws_list_delete_clean(&s->recvd_frames);
 
 #if defined(RWS_THREAD_SAFE)
 	rws_mutex_delete(s->work_mutex);
