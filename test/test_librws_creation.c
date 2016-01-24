@@ -49,7 +49,7 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 	memcpy(buff, text, length);
 	buff[length] = 0;
 
-	printf("\nSocket text: <%s>", buff);
+	printf("\nSocket text: %s", text);
 }
 
 static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length)
@@ -65,10 +65,10 @@ static void on_socket_connected(rws_socket socket)
 {
 	printf("\nSocket connected");
 
-	const char * s =
+	const char * test_send_text =
 	"{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
 
-	rws_socket_send_text(socket, s);
+	rws_socket_send_text(socket, test_send_text);
 }
 
 static void on_socket_disconnected(rws_socket socket)
@@ -84,7 +84,7 @@ static void on_socket_disconnected(rws_socket socket)
 
 int main(int argc, char* argv[])
 {
-	_socket = rws_socket_create();
+	_socket = rws_socket_create(); // create and store socket handle
 	assert(_socket);
 
 	rws_socket_set_scheme(_socket, "ws");

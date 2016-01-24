@@ -26,14 +26,15 @@
 #include "memory.h"
 #include "string.h"
 
-static int ping_num = 0;
+static unsigned int ping_num = 0;
 void rws_socket_send_ping(_rws_socket * s)
 {
 	char buff[32];
 	size_t len = 0;
 	_rws_frame * frame = rws_frame_create();
 
-	len = sprintf(buff, "%i", ++ping_num);
+	if (++ping_num >= 9999999) ping_num = 0;
+	len = sprintf(buff, "%u", ping_num);
 
 	frame->is_masked = rws_true;
 	frame->opcode = rws_opcode_ping;
@@ -471,7 +472,7 @@ static void rws_socket_work_th_func(void * user_object)
 			case COMMAND_SEND_HANDSHAKE: rws_socket_send_handshake(s); break;
 			case COMMAND_WAIT_HANDSHAKE_RESPONCE: rws_socket_wait_handshake_responce(s); break;
 			case COMMAND_IDLE:
-				if (loop_number >= 200) { rws_socket_send_ping(s); loop_number = 0; }
+				if (loop_number >= 400) { rws_socket_send_ping(s); loop_number = 0; }
 				if (s->is_connected) rws_socket_idle_send(s);
 				if (s->is_connected) rws_socket_idle_recv(s);
 				break;
