@@ -108,13 +108,17 @@ rws_bool rws_socket_process_handshake_responce(_rws_socket * s)
 // need close socket on error
 rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_size)
 {
+	int sended = -1;
 	rws_error_delete_clean(&s->error);
 #if defined(RWS_OS_WINDOWS)
-	send(s->socket, (const char*)data, data_size, 0);
+	sended = send(s->socket, (const char *)data, data_size, 0);
 #else
-	send(s->socket, data, data_size, 0);
+	sended = send(s->socket, data, data_size, 0);
 #endif
-	return rws_true;
+	if (sended > 0) return rws_true;
+
+	rws_socket_check_error(s);
+	return s->error ? rws_false : rws_true;
 }
 
 rws_bool rws_socket_recv(_rws_socket * s)
@@ -129,7 +133,9 @@ rws_bool rws_socket_recv(_rws_socket * s)
 
 	while (is_reading)
 	{
+		errno = -1;
 		len = recv(s->socket, buff, 8192, 0);
+//		error_number = errno;
 		if (len > 0)
 		{
 			total_len += len;
@@ -150,14 +156,18 @@ rws_bool rws_socket_recv(_rws_socket * s)
 		}
 	}
 
-	error_number = errno;
-	if (error_number != EWOULDBLOCK && error_number != EAGAIN)
-	{
-		s->error = rws_error_new_code_descr(rws_error_code_read_from_socket, "Error read from socket");
-		rws_socket_close(s);
-		return rws_false;
-	}
-	return rws_true;
+	if (len > 0) return rws_true;
+
+	rws_socket_check_error(s);
+	return s->error ? rws_false : rws_true;
+//	error_number = errno;
+//	if (error_number != EWOULDBLOCK && error_number != EAGAIN)
+//	{
+//		s->error = rws_error_new_code_descr(rws_error_code_read_from_socket, "Error read from socket");
+//		rws_socket_close(s);
+//		return rws_false;
+//	}
+//	return rws_true;
 }
 
 _rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const rws_opcode opcode)
@@ -331,6 +341,15 @@ void rws_socket_connect_to_host(_rws_socket * s)
 	rws_socket_t sock = RWS_INVALID_SOCKET;
 #if defined(RWS_OS_WINDOWS)
 	unsigned long iMode = 0;
+	WSADATA wsa;
+	char
+	if (WSAStartup(MAKEWORD(2,2), &wsa) != 0)
+	{
+		rws_socket_read_last_error(s);
+		if (!s->error) s->error = rws_error_new_code_descr(rws_error_code_connect_to_host, "Failed initialise winsock");
+		s->command = COMMAND_INFORM_DISCONNECTED;
+		return;
+	}
 #endif
 
 	memset(&hints, 0, sizeof(hints));
@@ -381,6 +400,9 @@ void rws_socket_connect_to_host(_rws_socket * s)
 
 	if (s->socket == RWS_INVALID_SOCKET)
 	{
+#if defined(RWS_OS_WINDOWS)
+		WSACleanup();
+#endif
 		s->error = rws_error_new_code_descr(rws_error_code_connect_to_host, "Cant connect to host");
 		s->command = COMMAND_INFORM_DISCONNECTED;
 	}
@@ -464,6 +486,7 @@ void rws_socket_close(_rws_socket * s)
 	{
 #if defined(RWS_OS_WINDOWS)
 		closesocket(s->socket);
+		WSACleanup();
 #else
 		close(s->socket);
 #endif
@@ -545,3 +568,32 @@ void rws_socket_cleanup_session_data(_rws_socket * s)
 	rws_list_delete_clean(&s->recvd_frames);
 }
 
+void rws_socket_check_error(_rws_socket * s)
+{
+	int error_code = -1;
+	socklen_t error_code_size = sizeof(error_code);
+	if (s->socket == RWS_INVALID_SOCKET) return;
+
+	if (getsockopt(s->socket, SOL_SOCKET, SO_ERROR, &error_code, &error_code_size) != 0) error_code = -1;
+	if (error_code > 0)
+	{
+		printf("\nERROR %i", error_code);
+	}
+
+
+//	rws_bool process = rws_false;
+//	switch (error_number)
+//	{
+//		case EISCONN: // Socket is connected
+//		case ENOTCONN: // The socket is not connected
+//		case ENOTSOCK: // Not a socket
+//		case EOPNOTSUPP: // Operation not supported on socket
+//		case EPROTOTYPE: // Protocol wrong type for socket
+//		case ESOCKTNOSUPPORT: // Socket type not supported
+//			process = rws_true;
+//			break;
+//
+//		default: break;
+//	}
+//	if (process) s->error = rws_error_new_code_descr(rws_error_code_connect_to_host, strerror(errno));
+}

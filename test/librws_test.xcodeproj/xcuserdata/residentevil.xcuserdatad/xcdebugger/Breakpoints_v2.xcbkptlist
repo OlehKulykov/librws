@@ -10,12 +10,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "librws_test/ViewController.m"
-            timestampString = "475156057.905071"
+            timestampString = "475294199.890989"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "11"
-            endingLineNumber = "11"
-            landmarkName = "on_socket_received_text()"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "on_socket_disconnected()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/socketpriv.c"
+            timestampString = "475297968.565196"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "243"
+            endingLineNumber = "243"
+            landmarkName = "rws_socket_idle_recv()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +41,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "librws_test/ViewController.m"
-            timestampString = "475294199.890989"
+            filePath = "../src/socketpriv.c"
+            timestampString = "475298115.464584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "on_socket_disconnected()"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "rws_socket_recv()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

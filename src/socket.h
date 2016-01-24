@@ -142,6 +142,7 @@ void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames);
 // delete all created, allocated data during work session
 void rws_socket_cleanup_session_data(_rws_socket * s);
 
+void rws_socket_check_error(_rws_socket * s);
 
 #if defined(RWS_THREAD_SAFE)
 #define rws_socket_work_lock(s) rws_mutex_lock(s->work_mutex);

@@ -12,7 +12,7 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 	memcpy(buff, text, length);
 	buff[length] = 0;
 
-	printf("\nSocket text: <%s>", buff);
+	NSLog(@"Socket text: <%s>", buff);
 }
 
 static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length)
@@ -21,12 +21,12 @@ static void on_socket_received_bin(rws_socket socket, const void * data, const u
 	memcpy(buff, data, length);
 	buff[length] = 0;
 
-	printf("\nSocket bin: <%s>", buff);
+	NSLog(@"Socket bin: <%s>", buff);
 }
 
 static void on_socket_connected(rws_socket socket)
 {
-	printf("\n socket connected");
+	NSLog(@"Socket connected");
 
 	const char * s =
 	"{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
@@ -39,37 +39,14 @@ static void on_socket_disconnected(rws_socket socket)
 	rws_error error = rws_socket_get_error(socket);
 	if (error)
 	{
-		printf("\nsocket disconnect with code, error: %i, %s",
+		NSLog(@"Socket disconnect with code, error: %i, %s",
 			   rws_error_get_code(error),
 			   rws_error_get_description(error));
 	}
 }
 
-void rws_thread_funct1(void * user_object)
-{
-	printf("\n THREAD 1");
-}
-void rws_thread_funct2(void * user_object)
-{
-	printf("\n THREAD 2");
-}
-void rws_thread_funct3(void * user_object)
-{
-	printf("\n THREAD 3");
-}
-void rws_thread_funct4(void * user_object)
-{
-	printf("\n THREAD 4");
-}
-
-
 static void rws_test()
 {
-	rws_thread_create(&rws_thread_funct1, NULL);
-	rws_thread_create(&rws_thread_funct2, NULL);
-	rws_thread_create(&rws_thread_funct3, NULL);
-	rws_thread_create(&rws_thread_funct4, NULL);
-
 	rws_socket socket = rws_socket_create();
 	assert(socket);
 	_socket = socket;
