@@ -78,7 +78,9 @@ void rws_socket_delete(rws_socket socket)
 	rws_error_delete(s->error);
 
 	rws_free(s->received);
+	rws_socket_delete_all_frames_in_list(s->send_frames);
 	rws_list_delete_clean(&s->send_frames);
+	rws_socket_delete_all_frames_in_list(s->recvd_frames);
 	rws_list_delete_clean(&s->recvd_frames);
 
 #if defined(RWS_THREAD_SAFE)
@@ -210,6 +212,12 @@ void rws_socket_set_on_received_text(rws_socket socket, rws_on_socket_recvd_text
 {
 	_rws_socket * s = (_rws_socket *)socket;
 	if (s) s->on_recvd_text = callback;
+}
+
+void rws_socket_set_on_received_bin(rws_socket socket, rws_on_socket_recvd_bin callback)
+{
+	_rws_socket * s = (_rws_socket *)socket;
+	if (s) s->on_recvd_bin = callback;
 }
 
 rws_bool rws_socket_is_connected(rws_socket socket)

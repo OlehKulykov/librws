@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/socketpriv.c"
-            timestampString = "475287000.312898"
+            timestampString = "475292036.239191"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
             landmarkName = "rws_socket_process_ping_frame()"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,12 +42,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/socketpriv.c"
-            timestampString = "475286996.762983"
+            timestampString = "475290098.723887"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "132"
-            endingLineNumber = "132"
-            landmarkName = "rws_socket_process_text_frame()"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
+            landmarkName = "rws_socket_inform_recvd_frames()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/socketpriv.c"
+            timestampString = "475292032.592777"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "414"
+            endingLineNumber = "414"
+            landmarkName = "rws_socket_work_th_func()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

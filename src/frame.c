@@ -42,7 +42,7 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 		unsigned int header_size = is_masked ? 6 : 2;
 
 		unsigned int expected_size = 0, mask_pos = 0;
-		size_t i = 0;
+		size_t index = 0;
 		_rws_frame * frame = NULL;
 		const unsigned char * actual_udata = NULL;
 		unsigned char * unmasked = NULL;
@@ -111,9 +111,9 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 			if (is_masked)
 			{
 				unmasked = (unsigned char *)frame->data;
-				for (i = 0; i < expected_size; i++)
+				for (index = 0; index < expected_size; index++)
 				{
-					*unmasked = *actual_udata ^ frame->mask[i & 0x3];
+					*unmasked = *actual_udata ^ frame->mask[index & 0x3];
 					unmasked++; actual_udata++;
 				}
 			}
@@ -171,7 +171,7 @@ void rws_frame_fill_with_send_data(_rws_frame * f, const void * data, const size
 	unsigned char header[16];
 	unsigned char * frame = NULL;
 	unsigned char mask[4];
-	size_t i = 0;
+	size_t index = 0;
 
 	rws_frame_create_header(f, header, data_size);
 	f->data_size = data_size + f->header_size;
@@ -187,14 +187,28 @@ void rws_frame_fill_with_send_data(_rws_frame * f, const void * data, const size
 		if (f->is_masked)
 		{
 			memcpy(mask, &f->mask, 4);
-			for (i = 0; i < data_size; i++)
+			for (index = 0; index < data_size; index++)
 			{
-				*frame = *frame ^ mask[i & 0x3];
+				*frame = *frame ^ mask[index & 0x3];
 				frame++;
 			}
 		}
 	}
 	f->is_finished = rws_true;
+}
+
+void rws_frame_combine_datas(_rws_frame * to, _rws_frame * from)
+{
+	unsigned char * comb_data = (unsigned char *)rws_malloc(to->data_size + from->data_size);
+	if (comb_data)
+	{
+		if (to->data && to->data_size) memcpy(comb_data, to->data, to->data_size);
+		comb_data += to->data_size;
+		if (from->data && from->data_size) memcpy(comb_data, from->data, from->data_size);
+	}
+	rws_free(to->data);
+	to->data = comb_data;
+	to->data_size += from->data_size;
 }
 
 _rws_frame * rws_frame_create(void)
@@ -203,9 +217,9 @@ _rws_frame * rws_frame_create(void)
 	union {
 		unsigned int ui;
 		unsigned char b[4];
-	} m;
-	m.ui = 2018915346;
-	memcpy(f->mask, m.b, 4);
+	} mask_union;
+	mask_union.ui = 2018915346;
+	memcpy(f->mask, mask_union.b, 4);
 //	f->mask = (rand() / (RAND_MAX / 2) + 1) * rand();
 	return f;
 }

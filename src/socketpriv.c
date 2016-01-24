@@ -26,6 +26,41 @@
 #include "memory.h"
 #include "string.h"
 
+void rws_socket_inform_recvd_frames(_rws_socket * s)
+{
+	rws_bool is_all_finished = rws_true;
+	_rws_frame * frame = NULL;
+	_rws_node * cur = s->recvd_frames;
+	while (cur)
+	{
+		frame = (_rws_frame *)cur->value.object;
+		if (frame)
+		{
+			if (frame->is_finished)
+			{
+				switch (frame->opcode)
+				{
+					case rws_opcode_text_frame:
+						if (s->on_recvd_text) s->on_recvd_text(s, (const char *)frame->data, (unsigned int)frame->data_size);
+						break;
+					case rws_opcode_binary_frame:
+						if (s->on_recvd_bin) s->on_recvd_bin(s, frame->data, (unsigned int)frame->data_size);
+						break;
+					default: break;
+				}
+				rws_frame_delete(frame);
+				cur->value.object = NULL;
+			}
+			else
+			{
+				is_all_finished = rws_false;
+			}
+		}
+		cur = cur->next;
+	}
+	if (is_all_finished) rws_list_delete_clean(&s->recvd_frames);
+}
+
 void rws_socket_read_handshake_responce_value(const char * str, char ** value)
 {
 	const char * s = NULL;
@@ -70,6 +105,7 @@ rws_bool rws_socket_process_handshake_responce(_rws_socket * s)
 	return rws_true;
 }
 
+// need close socket on error
 rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_size)
 {
 	rws_error_delete_clean(&s->error);
@@ -126,26 +162,46 @@ rws_bool rws_socket_recv(_rws_socket * s)
 	return rws_true;
 }
 
-void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * text_frame)
+_rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const rws_opcode opcode)
 {
-	if (text_frame->is_finished) 
+	_rws_frame * last = NULL;
+	_rws_frame * frame = NULL;
+	_rws_node * cur = s->recvd_frames;
+	while (cur)
 	{
-		if (text_frame->data && text_frame->data_size) rws_socket_append_recvd_frames(s, text_frame);
-		else rws_frame_delete(text_frame);
+		frame = (_rws_frame *)cur->value.object;
+		if (frame)
+		{
+			if (!frame->is_finished && frame->opcode == opcode) last = frame;
+		}
+		cur = cur->next;
 	}
-	// iterate to last unfinished text frame and combine
-
-
-	rws_frame_delete(text_frame);
+	return last;
 }
 
-void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * ping_frame)
+void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * frame)
+{
+	_rws_frame * last_unfin = rws_socket_last_unfin_recvd_frame_by_opcode(s, frame->opcode);
+	if (last_unfin)
+	{
+		rws_frame_combine_datas(last_unfin, frame);
+		last_unfin->is_finished = frame->is_finished;
+		rws_frame_delete(frame);
+	}
+	else
+	{
+		if (frame->data && frame->data_size) rws_socket_append_recvd_frames(s, frame);
+		else rws_frame_delete(frame);
+	}
+}
+
+void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame)
 {
 	_rws_frame * pong_frame = rws_frame_create();
 	pong_frame->opcode = rws_opcode_pong;
 	pong_frame->is_masked = rws_true;
-	rws_frame_fill_with_send_data(pong_frame, ping_frame->data, ping_frame->data_size);
-	rws_frame_delete(ping_frame);
+	rws_frame_fill_with_send_data(pong_frame, frame->data, frame->data_size);
+	rws_frame_delete(frame);
 	rws_socket_append_send_frames(s, pong_frame);
 }
 
@@ -174,6 +230,7 @@ void rws_socket_idle_recv(_rws_socket * s)
 
 	if (!rws_socket_recv(s))
 	{
+		// sock already closed
 		if (s->error) s->command = COMMAND_INFORM_DISCONNECTED;
 		return;
 	}
@@ -210,6 +267,7 @@ void rws_socket_wait_handshake_responce(_rws_socket * s)
 {
 	if (!rws_socket_recv(s))
 	{
+		// sock already closed
 		if (s->error) s->command = COMMAND_INFORM_DISCONNECTED;
 		return;
 	}
@@ -353,8 +411,13 @@ static void rws_socket_work_th_func(void * user_object)
 				if (s->on_connected) s->on_connected(s);
 				break;
 			case COMMAND_INFORM_DISCONNECTED:
-				s->command = COMMAND_IDLE;
+				s->command = COMMAND_END;
+				assert(s->socket == RWS_INVALID_SOCKET);
+				rws_socket_cleanup_session_data(s);
 				if (s->on_disconnected) s->on_disconnected(s);
+				break;
+			case COMMAND_IDLE:
+				if (s->recvd_frames) rws_socket_inform_recvd_frames(s);
 				break;
 			default: break;
 		}
@@ -450,4 +513,27 @@ rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text)
 	return rws_true;
 }
 
+void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames)
+{
+	_rws_frame * frame = NULL;
+	_rws_node * cur = list_with_frames;
+	while (cur)
+	{
+		frame = (_rws_frame *)cur->value.object;
+		if (frame) rws_frame_delete(frame);
+		cur->value.object = NULL;
+	}
+}
+
+void rws_socket_cleanup_session_data(_rws_socket * s)
+{
+	rws_free_clean(&s->received);
+	s->received_size = 0;
+	s->received_len = 0;
+
+	rws_socket_delete_all_frames_in_list(s->send_frames);
+	rws_list_delete_clean(&s->send_frames);
+	rws_socket_delete_all_frames_in_list(s->recvd_frames);
+	rws_list_delete_clean(&s->recvd_frames);
+}
 

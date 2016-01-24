@@ -112,6 +112,8 @@ typedef void (*rws_on_socket)(rws_socket socket);
 
 typedef void (*rws_on_socket_recvd_text)(rws_socket socket, const char * text, const unsigned int length);
 
+typedef void (*rws_on_socket_recvd_bin)(rws_socket socket, const void * text, const unsigned int length);
+
 // socket
 
 /**
@@ -162,6 +164,9 @@ RWS_API(void) rws_socket_set_on_connected(rws_socket socket, rws_on_socket callb
 RWS_API(void) rws_socket_set_on_disconnected(rws_socket socket, rws_on_socket callback);
 
 RWS_API(void) rws_socket_set_on_received_text(rws_socket socket, rws_on_socket_recvd_text callback);
+
+RWS_API(void) rws_socket_set_on_received_bin(rws_socket socket, rws_on_socket_recvd_bin callback);
+
 
 // error
 

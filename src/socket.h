@@ -77,6 +77,7 @@ typedef struct _rws_socket_struct
 	rws_on_socket on_connected;
 	rws_on_socket on_disconnected;
 	rws_on_socket_recvd_text on_recvd_text;
+	rws_on_socket_recvd_bin on_recvd_bin;
 
 	void * received;
 	size_t received_size; // size of 'received' memory
@@ -102,9 +103,11 @@ rws_bool rws_socket_recv(_rws_socket * s);
 // send raw data to socket
 rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_size);
 
-void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * ping_frame);
+_rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const rws_opcode opcode);
 
-void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * ping_frame);
+void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * frame);
+
+void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame);
 
 void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame);
 
@@ -129,6 +132,13 @@ void rws_socket_append_recvd_frames(_rws_socket * s, _rws_frame * frame);
 void rws_socket_append_send_frames(_rws_socket * s, _rws_frame * frame);
 
 rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text);
+
+void rws_socket_inform_recvd_frames(_rws_socket * s);
+
+void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames);
+
+// delete all created, allocated data during work session
+void rws_socket_cleanup_session_data(_rws_socket * s);
 
 
 #if defined(RWS_THREAD_SAFE)
