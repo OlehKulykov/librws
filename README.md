@@ -6,7 +6,7 @@
 
 ### Features
 * No additional dependecies
-* Single header library interface with public methods
+* Single header library interface ```librws.h``` with public methods
 * Thread safe by default
 * Send/receive logic in background thread
 
