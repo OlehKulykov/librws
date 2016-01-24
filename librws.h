@@ -81,37 +81,72 @@
 // types
 
 /**
- @brief Boolean type.
+ @brief Boolean type as unsigned byte type.
  */
 typedef unsigned char rws_bool;
 #define rws_true 1
 #define rws_false 0
+
 
 /**
  @brief Type of all public objects.
  */
 typedef void* rws_handle;
 
+
 /**
  @brief Socket handle.
  */
 typedef rws_handle rws_socket;
+
 
 /**
  @brief Error object handle.
  */
 typedef rws_handle rws_error;
 
+
+/**
+ @brief Mutex object handle.
+ */
 typedef rws_handle rws_mutex;
 
+
+/**
+ @brief Thread object handle.
+ */
 typedef rws_handle rws_thread;
 
+
+/**
+ @brief Callback type of thread function.
+ @param user_object User object provided during thread creation.
+ */
 typedef void (*rws_thread_funct)(void * user_object);
 
+
+/**
+ @brief Callback type of socket object.
+ @param socket Socket object.
+ */
 typedef void (*rws_on_socket)(rws_socket socket);
 
+
+/**
+ @brief Callback type on socket receive text frame.
+ @param socket Socket object.
+ @param text Pointer to reseived text.
+ @param length Received text lenght without null terminated char.
+ */
 typedef void (*rws_on_socket_recvd_text)(rws_socket socket, const char * text, const unsigned int length);
 
+
+/**
+ @brief Callback type on socket receive binary frame.
+ @param socket Socket object.
+ @param data Received binary data.
+ @param length Received binary data lenght.
+ */
 typedef void (*rws_on_socket_recvd_bin)(rws_socket socket, const void * data, const unsigned int length);
 
 
@@ -123,45 +158,153 @@ typedef void (*rws_on_socket_recvd_bin)(rws_socket socket, const void * data, co
  */
 RWS_API(rws_socket) rws_socket_create(void);
 
+
+/**
+ @brief Delete disconnected socket object.
+ @param socket Socket object for delete, can be null.
+ */
 RWS_API(void) rws_socket_delete(rws_socket socket);
 
+
+/**
+ @brief Set socket connect URL scheme string.
+ @param socket Socket object.
+ @param scheme Connect URL scheme, "http" or "ws"
+ @code
+ rws_socket_set_scheme(socket, "http");
+ rws_socket_set_scheme(socket, "ws");
+ @endcode
+ */
 RWS_API(void) rws_socket_set_scheme(rws_socket socket, const char * scheme);
+
+
+/**
+ @brief Get socket connect URL scheme string.
+ @param socket Socket object.
+ @return Connect URL cheme or null.
+ */
 RWS_API(const char *) rws_socket_get_scheme(rws_socket socket);
 
+
+/**
+ @brief Set socket connect URL scheme string.
+ @param socket Socket object.
+ @param scheme Connect URL host, "echo.websocket.org"
+ @code
+ rws_socket_set_host(socket, "echo.websocket.org");
+ @endcode
+ */
 RWS_API(void) rws_socket_set_host(rws_socket socket, const char * host);
+
+
+/**
+ @brief Get socket connect URL host string.
+ @param socket Socket object.
+ @return Connect URL host or null.
+ */
 RWS_API(const char *) rws_socket_get_host(rws_socket socket);
 
+
+/**
+ @brief Set socket connect URL path string.
+ @param socket Socket object.
+ @param scheme Connect URL path started with '/' character, "/" - for empty, "/path"
+ @code
+ rws_socket_set_path(socket, "/"); // empty path
+ rws_socket_set_path(socket, "/path"); // some path
+ @endcode
+ */
 RWS_API(void) rws_socket_set_path(rws_socket socket, const char * path);
+
+
+/**
+ @brief Get socket connect URL path string.
+ @param socket Socket object.
+ @return Connect URL path or null.
+ */
 RWS_API(const char *) rws_socket_get_path(rws_socket socket);
 
+
+/**
+ @brief Set socket connect URL port.
+ @param socket Socket object.
+ @param scheme Connect URL port.
+ @code
+ rws_socket_set_port(socket, 80);
+ @endcode
+ */
 RWS_API(void) rws_socket_set_port(rws_socket socket, const int port);
+
+
+/**
+ @brief Get socket connect URL port.
+ @param socket Socket object.
+ @return Connect URL port or 0.
+ */
 RWS_API(int) rws_socket_get_port(rws_socket socket);
 
+
+/**
+ @brief Get socket last error object handle.
+ @param socket Socket object.
+ @return Last error object handle or null if no error.
+ */
 RWS_API(rws_error) rws_socket_get_error(rws_socket socket);
+
 
 /**
  @brief Start connection.
- @return rws_true - all params exists and connection started, otherwice rws_false
+ @detailed This method can generate error object.
+ @param socket Socket object.
+ @return rws_true - all params exists and connection started, otherwice rws_false.
  */
 RWS_API(rws_bool) rws_socket_connect(rws_socket socket);
 
+
 /**
  @brief Check is socket has connection to host and handshake(sucessfully done).
+ @param socket Socket object.
  @return trw_true - connected to host and handshacked, otherwice rws_false.
  */
 RWS_API(rws_bool) rws_socket_is_connected(rws_socket socket);
 
+
+/**
+ @brief Send text to connect socket.
+ @param socket Socket object.
+ @param text Text string for sending.
+ @return rws_true - socket and text exists and placed to send queue, otherwice rws_false.
+ */
 RWS_API(rws_bool) rws_socket_send_text(rws_socket socket, const char * text);
 
+
+/**
+ @brief Set socket user defined object pointer for identificating socket object.
+ @param socket Socket object.
+ @param user_object Void pointer to user object.
+ */
 RWS_API(void) rws_socket_set_user_object(rws_socket socket, void * user_object);
 
+
+/**
+ @brief Get socket user defined object.
+ @param socket Socket object.
+ @return User defined object pointer or null.
+ */
 RWS_API(void *) rws_socket_get_user_object(rws_socket socket);
 
+
+/**
+
+ */
 RWS_API(void) rws_socket_set_on_connected(rws_socket socket, rws_on_socket callback);
+
 
 RWS_API(void) rws_socket_set_on_disconnected(rws_socket socket, rws_on_socket callback);
 
+
 RWS_API(void) rws_socket_set_on_received_text(rws_socket socket, rws_on_socket_recvd_text callback);
+
 
 RWS_API(void) rws_socket_set_on_received_bin(rws_socket socket, rws_on_socket_recvd_bin callback);
 
@@ -185,6 +328,7 @@ typedef enum _rws_error_code
 	rws_error_code_connection_closed
 } rws_error_code;
 
+
 /**
  @return 0 - if error is empty or no error, otherwice error code.
  */
@@ -204,9 +348,12 @@ RWS_API(const char *) rws_error_get_description(rws_error error);
 
 RWS_API(rws_mutex) rws_mutex_create_recursive(void);
 
+
 RWS_API(void) rws_mutex_lock(rws_mutex mutex);
 
+
 RWS_API(void) rws_mutex_unlock(rws_mutex mutex);
+
 
 RWS_API(void) rws_mutex_delete(rws_mutex mutex);
 
@@ -214,6 +361,7 @@ RWS_API(void) rws_mutex_delete(rws_mutex mutex);
 // thread
 
 RWS_API(rws_thread) rws_thread_create(rws_thread_funct thread_function, void * user_object);
+
 
 RWS_API(void) rws_thread_sleep(const unsigned int millisec);
 
