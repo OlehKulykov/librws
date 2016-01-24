@@ -25,6 +25,7 @@
 		3DB6A4ED1C4EDCFF00DDBEAF /* socketpriv.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4EB1C4EDCFF00DDBEAF /* socketpriv.c */; };
 		3DB6A4F21C4EF4EA00DDBEAF /* string.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4F01C4EF4EA00DDBEAF /* string.c */; };
 		3DB6A4F41C4EF8E400DDBEAF /* test_librws_socket_get_set.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4F31C4EF8E400DDBEAF /* test_librws_socket_get_set.c */; };
+		3DED42511C5588EB003AB7EC /* test_librws_creation.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4EE1C4EEB2600DDBEAF /* test_librws_creation.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -300,6 +301,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DED42511C5588EB003AB7EC /* test_librws_creation.c in Sources */,
 				3D8A11BE1C4E9C140005F9B9 /* librws_testTests.m in Sources */,
 				3DB6A4F41C4EF8E400DDBEAF /* test_librws_socket_get_set.c in Sources */,
 			);

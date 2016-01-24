@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #if defined(CMAKE_BUILD)
 #undef CMAKE_BUILD
@@ -40,12 +41,66 @@
 #undef CMAKE_BUILD
 #endif
 
+static rws_socket _socket = NULL;
+
+static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length)
+{
+	char buff[8*1024];
+	memcpy(buff, text, length);
+	buff[length] = 0;
+
+	printf("\nSocket text: <%s>", buff);
+}
+
+static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length)
+{
+	char buff[8*1024];
+	memcpy(buff, data, length);
+	buff[length] = 0;
+
+	printf("\nSocket bin: <%s>", buff);
+}
+
+static void on_socket_connected(rws_socket socket)
+{
+	printf("\nSocket connected");
+
+	const char * s =
+	"{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
+
+	rws_socket_send_text(socket, s);
+}
+
+static void on_socket_disconnected(rws_socket socket)
+{
+	rws_error error = rws_socket_get_error(socket);
+	if (error)
+	{
+		printf("\nSocket disconnect with code, error: %i, %s",
+			  rws_error_get_code(error),
+			  rws_error_get_description(error));
+	}
+}
+
 int main(int argc, char* argv[])
 {
-	rws_socket socket = rws_socket_create();
-	assert(socket);
+	_socket = rws_socket_create();
+	assert(_socket);
 
-	rws_socket_delete(socket);
+	rws_socket_set_scheme(_socket, "ws");
+	rws_socket_set_host(_socket, "echo.websocket.org");
+	rws_socket_set_path(_socket, "/");
+	rws_socket_set_port(_socket, 80);
+
+	rws_socket_set_on_disconnected(_socket, &on_socket_disconnected);
+	rws_socket_set_on_connected(_socket, &on_socket_connected);
+	rws_socket_set_on_received_text(_socket, &on_socket_received_text);
+	rws_socket_set_on_received_bin(_socket, &on_socket_received_bin);
+
+	rws_socket_connect(_socket);
+
+
+	// main loop here
 
 	return 0;
 }
