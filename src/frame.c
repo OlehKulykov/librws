@@ -212,12 +212,12 @@ void rws_frame_combine_datas(_rws_frame * to, _rws_frame * from)
 
 _rws_frame * rws_frame_create(void)
 {
-	assert(sizeof(unsigned int) == 4);
 	_rws_frame * f = (_rws_frame *)rws_malloc_zero(sizeof(_rws_frame));
 	union {
 		unsigned int ui;
 		unsigned char b[4];
 	} mask_union;
+	assert(sizeof(unsigned int) == 4);
 	mask_union.ui = 2018915346;
 	memcpy(f->mask, mask_union.b, 4);
 //	f->mask = (rand() / (RAND_MAX / 2) + 1) * rand();

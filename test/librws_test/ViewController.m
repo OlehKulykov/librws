@@ -5,6 +5,12 @@
 #include "list.h"
 
 static rws_socket _socket = NULL;
+static ViewController * __viewController;
+
+//static void on_socket_log_message(rws_socket socket, const char * message)
+//{
+//	[__viewController log:message];
+//}
 
 static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length)
 {
@@ -90,14 +96,28 @@ static void rws_test()
 
 @interface ViewController ()
 
+@property (nonatomic, weak) IBOutlet UITextView * textView;
+
 @end
 
 @implementation ViewController
+
+- (void) log:(const char *) mess
+{
+	NSString * messstring = [NSString stringWithUTF8String:mess];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		NSString * text = [[_textView text] stringByAppendingFormat:@"\n%@", messstring];
+		[_textView setText:text];
+		NSLog(@"%s", mess);
+	});
+}
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+	__viewController = self;
+	[_textView setText:@""];
 	rws_test();
 }
 

@@ -25,6 +25,10 @@
 #include "socket.h"
 #include "memory.h"
 
+#if !defined(RWS_OS_WINDOWS)
+#include <signal.h>
+#endif
+
 // public
 rws_bool rws_socket_connect(rws_socket socket)
 {
@@ -45,10 +49,22 @@ rws_bool rws_socket_send_text(rws_socket socket, const char * text)
 	return r;
 }
 
+#if !defined(RWS_OS_WINDOWS)
+void rws_socket_handle_sigpipe(int signal_number)
+{
+	printf("\nlibrws handle sigpipe %i", signal_number);
+	return;
+}
+#endif
+
 rws_socket rws_socket_create(void)
 {
 	_rws_socket * s = (_rws_socket *)rws_malloc_zero(sizeof(_rws_socket));
 	if (!s) return NULL;
+
+#if !defined(RWS_OS_WINDOWS)
+	signal(SIGPIPE, rws_socket_handle_sigpipe);
+#endif
 
 	s->port = -1;
 	s->socket = RWS_INVALID_SOCKET;
@@ -145,18 +161,7 @@ int rws_socket_get_port(rws_socket socket)
 	return s ? s->port : -1;
 }
 
-void rws_socket_set_receive_buffer_size(rws_socket socket, const unsigned int size)
-{
-	_rws_socket * s = (_rws_socket *)socket;
-	unsigned int buffSize = size;
-	int res = 0;
-	if (!s) return;
-	if (s->socket == RWS_INVALID_SOCKET) return;
-
-	res = setsockopt(s->socket, SOL_SOCKET, SO_RCVBUF, (char *)&buffSize, sizeof(unsigned int));
-	if (res == 0) return;
-}
-
+/*
 unsigned int _rws_socket_get_receive_buffer_size(rws_socket_t socket)
 {
 	unsigned int size = 0;
@@ -177,7 +182,7 @@ unsigned int rws_socket_get_receive_buffer_size(rws_socket socket)
 	if (s->socket == RWS_INVALID_SOCKET) return 0;
 	return _rws_socket_get_receive_buffer_size(s->socket);
 }
-
+*/
 rws_error rws_socket_get_error(rws_socket socket)
 {
 	_rws_socket * s = (_rws_socket *)socket;

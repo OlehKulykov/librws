@@ -119,7 +119,11 @@ void rws_socket_idle_send(_rws_socket * s);
 
 void rws_socket_wait_handshake_responce(_rws_socket * s);
 
+void rws_socket_send_ping(_rws_socket * s);
+
 void rws_socket_send_handshake(_rws_socket * s);
+
+struct addrinfo * rws_socket_connect_getaddr_info(_rws_socket * s);
 
 void rws_socket_connect_to_host(_rws_socket * s);
 
@@ -137,12 +141,14 @@ rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text);
 
 void rws_socket_inform_recvd_frames(_rws_socket * s);
 
+void rws_socket_set_option(_rws_socket * s, int option, int value);
+
 void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames);
 
 // delete all created, allocated data during work session
 void rws_socket_cleanup_session_data(_rws_socket * s);
 
-void rws_socket_check_error(_rws_socket * s);
+void rws_socket_check_write_error(_rws_socket * s, int error_num);
 
 #if defined(RWS_THREAD_SAFE)
 #define rws_socket_work_lock(s) rws_mutex_lock(s->work_mutex);

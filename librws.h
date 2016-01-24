@@ -114,6 +114,7 @@ typedef void (*rws_on_socket_recvd_text)(rws_socket socket, const char * text, c
 
 typedef void (*rws_on_socket_recvd_bin)(rws_socket socket, const void * data, const unsigned int length);
 
+
 // socket
 
 /**
@@ -135,9 +136,6 @@ RWS_API(const char *) rws_socket_get_path(rws_socket socket);
 
 RWS_API(void) rws_socket_set_port(rws_socket socket, const int port);
 RWS_API(int) rws_socket_get_port(rws_socket socket);
-
-RWS_API(void) rws_socket_set_receive_buffer_size(rws_socket socket, const unsigned int size);
-RWS_API(unsigned int) rws_socket_get_receive_buffer_size(rws_socket socket);
 
 RWS_API(rws_error) rws_socket_get_error(rws_socket socket);
 
@@ -176,7 +174,7 @@ typedef enum _rws_error_code
 
 	rws_error_code_send_handshake,
 	rws_error_code_parse_handshake,
-	rws_error_code_read_from_socket,
+	rws_error_code_read_write_socket,
 	rws_error_code_connect_to_host,
 
 	/**
