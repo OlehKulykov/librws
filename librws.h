@@ -262,6 +262,13 @@ RWS_API(rws_bool) rws_socket_connect(rws_socket socket);
 
 
 /**
+ @brief Disconnect socket.
+ @param socket Socket object.
+ */
+RWS_API(void) rws_socket_disconnect(rws_socket socket);
+
+
+/**
  @brief Check is socket has connection to host and handshake(sucessfully done).
  @param socket Socket object.
  @return trw_true - connected to host and handshacked, otherwice rws_false.

@@ -38,6 +38,19 @@ rws_bool rws_socket_connect(rws_socket socket)
 	return rws_socket_create_start_work_thread(s);
 }
 
+void rws_socket_disconnect(rws_socket socket)
+{
+	_rws_socket * s = (_rws_socket *)socket;
+	if (s)
+	{
+		rws_socket_work_lock(s)
+		rws_socket_close(s);
+		rws_socket_cleanup_session_data(s);
+		s->command = COMMAND_END;
+		rws_socket_work_unlock(s)
+	}
+}
+
 rws_bool rws_socket_send_text(rws_socket socket, const char * text)
 {
 	_rws_socket * s = (_rws_socket *)socket;
@@ -84,6 +97,8 @@ void rws_socket_delete(rws_socket socket)
 	if (!s) return;
 
 	rws_socket_close(s);
+
+	rws_socket_cleanup_session_data(s);
 
 	rws_string_delete(s->scheme);
 	rws_string_delete(s->host);
