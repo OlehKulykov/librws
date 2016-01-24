@@ -14,6 +14,10 @@
 ### Example
 ##### Create and store websocket object handle
 ```c
+  // Define variable or field for socket handle
+  rws_socket _socket = NULL;
+  ............
+  // Create socket object
   _socket = rws_socket_create();
 ```
 ##### Set websocket connection url
@@ -48,6 +52,10 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
   rws_socket_set_on_disconnected(_socket, &on_socket_disconnected);
   rws_socket_set_on_connected(_socket, &on_socket_connected);
   rws_socket_set_on_received_text(_socket, &on_socket_received_text);
+```
+##### Connect
+```c
+  rws_socket_connect(_socket);
 ```
 ##### Send message to websocket
 ```c
