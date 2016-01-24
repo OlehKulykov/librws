@@ -150,8 +150,6 @@ rws_bool rws_socket_recv(_rws_socket * s)
 		}
 	}
 
-	if (s->received_len) printf("\nReceived data [%i]: <%s>",  (int)s->received_len, (char *)s->received);
-
 	error_number = errno;
 	if (error_number != EWOULDBLOCK && error_number != EAGAIN)
 	{
@@ -205,13 +203,16 @@ void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame)
 	rws_socket_append_send_frames(s, pong_frame);
 }
 
+void rws_socket_process_conn_close_frame(_rws_socket * s, _rws_frame * frame)
+{
+	s->command = COMMAND_INFORM_DISCONNECTED;
+	s->error = rws_error_new_code_descr(rws_error_code_connection_closed, "Connection was closed by endpoint");
+	rws_socket_close(s);
+	rws_frame_delete(frame);
+}
+
 void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame)
 {
-	if (frame->data && frame->data_size)
-	{
-		printf("\nReceved frame: <%s>", (char*)frame->data);
-	}
-
 	switch (frame->opcode)
 	{
 		case rws_opcode_ping: rws_socket_process_ping_frame(s, frame); break;
@@ -219,7 +220,7 @@ void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame)
 		case rws_opcode_binary_frame:
 			rws_socket_process_bin_or_text_frame(s, frame);
 			break;
-
+		case rws_opcode_connection_close: rws_socket_process_conn_close_frame(s, frame); break;
 		default:
 			// unprocessed => delete
 			rws_frame_delete(frame);
@@ -415,7 +416,7 @@ static void rws_socket_work_th_func(void * user_object)
 				break;
 			case COMMAND_INFORM_DISCONNECTED:
 				s->command = COMMAND_END;
-				assert(s->socket == RWS_INVALID_SOCKET);
+				assert(s->socket == RWS_INVALID_SOCKET); //don't forget close socket
 				rws_socket_cleanup_session_data(s);
 				if (s->on_disconnected) s->on_disconnected(s);
 				break;
@@ -430,6 +431,7 @@ static void rws_socket_work_th_func(void * user_object)
 
 rws_bool rws_socket_create_start_work_thread(_rws_socket * s)
 {
+	rws_error_delete_clean(&s->error);
 	s->command = COMMAND_NONE;
 	s->work_thread = rws_thread_create(&rws_socket_work_th_func, s);
 	if (s->work_thread)
@@ -530,6 +532,9 @@ void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames)
 
 void rws_socket_cleanup_session_data(_rws_socket * s)
 {
+	rws_string_delete_clean(&s->sec_ws_accept);
+	s->work_thread = NULL;
+
 	rws_free_clean(&s->received);
 	s->received_size = 0;
 	s->received_len = 0;

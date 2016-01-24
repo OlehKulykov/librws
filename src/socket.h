@@ -109,6 +109,8 @@ void rws_socket_process_bin_or_text_frame(_rws_socket * s, _rws_frame * frame);
 
 void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame);
 
+void rws_socket_process_conn_close_frame(_rws_socket * s, _rws_frame * frame);
+
 void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame);
 
 void rws_socket_idle_recv(_rws_socket * s);
