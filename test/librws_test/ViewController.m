@@ -15,6 +15,15 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 	printf("\nSocket text: <%s>", buff);
 }
 
+static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length)
+{
+	char buff[8*1024];
+	memcpy(buff, data, length);
+	buff[length] = 0;
+
+	printf("\nSocket bin: <%s>", buff);
+}
+
 static void on_socket_connected(rws_socket socket)
 {
 	printf("\n socket connected");
@@ -96,6 +105,7 @@ static void rws_test()
 	rws_socket_set_on_disconnected(socket, &on_socket_disconnected);
 	rws_socket_set_on_connected(socket, &on_socket_connected);
 	rws_socket_set_on_received_text(socket, &on_socket_received_text);
+	rws_socket_set_on_received_bin(socket, &on_socket_received_bin);
 
 	rws_socket_connect(socket);
 }

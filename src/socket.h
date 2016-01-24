@@ -105,7 +105,7 @@ rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_s
 
 _rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const rws_opcode opcode);
 
-void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * frame);
+void rws_socket_process_bin_or_text_frame(_rws_socket * s, _rws_frame * frame);
 
 void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame);
 

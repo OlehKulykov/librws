@@ -179,7 +179,7 @@ _rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const 
 	return last;
 }
 
-void rws_socket_process_text_frame(_rws_socket * s, _rws_frame * frame)
+void rws_socket_process_bin_or_text_frame(_rws_socket * s, _rws_frame * frame)
 {
 	_rws_frame * last_unfin = rws_socket_last_unfin_recvd_frame_by_opcode(s, frame->opcode);
 	if (last_unfin)
@@ -215,7 +215,10 @@ void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame)
 	switch (frame->opcode)
 	{
 		case rws_opcode_ping: rws_socket_process_ping_frame(s, frame); break;
-		case rws_opcode_text_frame: rws_socket_process_text_frame(s, frame); break;
+		case rws_opcode_text_frame:
+		case rws_opcode_binary_frame:
+			rws_socket_process_bin_or_text_frame(s, frame);
+			break;
 
 		default:
 			// unprocessed => delete
