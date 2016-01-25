@@ -5,9 +5,9 @@
 
 
 ### Features
-* No additional dependecies
+* No additional dependecies, exceprt ```pthread``` on unix-like platforms and Win threads on Windows
 * Single header library interface ```librws.h``` with public methods
-* Thread safe by default
+* Thread safe
 * Send/receive logic in background thread
 
 
@@ -34,8 +34,11 @@
 // callback trigered on socket disconnected with/without error
 static void on_socket_disconnected(rws_socket socket) 
 {
+  // process error
   rws_error error = rws_socket_get_error(socket);
   if (error) printf("\nSocket disconnect with code, error: %i, %s", rws_error_get_code(error), rws_error_get_description(error));
+  // forget about this socket object, due to next disconnection sequence
+  _socket = NULL;
 }
 // callback trigered on socket connected and handshake done
 static void on_socket_connected(rws_socket socket)
@@ -49,7 +52,7 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 }
 ..................
 // Set socket callbacks
-  rws_socket_set_on_disconnected(_socket, &on_socket_disconnected);
+  rws_socket_set_on_disconnected(_socket, &on_socket_disconnected); // required
   rws_socket_set_on_connected(_socket, &on_socket_connected);
   rws_socket_set_on_received_text(_socket, &on_socket_received_text);
 ```
