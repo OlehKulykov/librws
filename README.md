@@ -29,6 +29,7 @@
   rws_socket_set_path(_socket, "/");
 ```
 ##### Set websocket responce callbacks
+Warning: ```rws_socket_set_on_disconnected``` is required
 ```c
 // Main callbacks functions
 // callback trigered on socket disconnected with/without error
