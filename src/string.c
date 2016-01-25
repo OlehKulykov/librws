@@ -48,6 +48,10 @@ void rws_string_delete(char * str)
 
 void rws_string_delete_clean(char ** str)
 {
-	rws_free_clean((void **)str);
+	if (str)
+	{
+		rws_free(*str);
+		*str = NULL;
+	}
 }
 
