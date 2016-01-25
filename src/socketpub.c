@@ -153,12 +153,29 @@ void rws_socket_delete(_rws_socket * s)
 	rws_free(s);
 }
 
+void rws_socket_set_url(rws_socket socket,
+						const char * scheme,
+						const char * host,
+						const int port,
+						const char * path)
+{
+	_rws_socket * s = (_rws_socket *)socket;
+	if (!s) return;
+	rws_string_delete(s->scheme);
+	s->scheme = rws_string_copy(scheme);
+	rws_string_delete(s->host);
+	s->host = rws_string_copy(host);
+	rws_string_delete(s->path);
+	s->path = rws_string_copy(path);
+	s->port = port;
+}
+
 void rws_socket_set_scheme(rws_socket socket, const char * scheme)
 {
 	_rws_socket * s = (_rws_socket *)socket;
 	if (!s) return;
-	rws_string_delete_clean(&s->scheme);
-	if (s) s->scheme = rws_string_copy(scheme);
+	rws_string_delete(s->scheme);
+	s->scheme = rws_string_copy(scheme);
 }
 
 const char * rws_socket_get_scheme(rws_socket socket)
@@ -171,8 +188,8 @@ void rws_socket_set_host(rws_socket socket, const char * host)
 {
 	_rws_socket * s = (_rws_socket *)socket;
 	if (!s) return;
-	rws_string_delete_clean(&s->host);
-	if (s) s->host = rws_string_copy(host);
+	rws_string_delete(s->host);
+	s->host = rws_string_copy(host);
 }
 
 const char * rws_socket_get_host(rws_socket socket)
@@ -185,8 +202,8 @@ void rws_socket_set_path(rws_socket socket, const char * path)
 {
 	_rws_socket * s = (_rws_socket *)socket;
 	if (!s) return;
-	rws_string_delete_clean(&s->path);
-	if (s) s->path = rws_string_copy(path);
+	rws_string_delete(s->path);
+	s->path = rws_string_copy(path);
 }
 
 const char * rws_socket_get_path(rws_socket socket)

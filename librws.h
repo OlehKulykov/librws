@@ -160,6 +160,24 @@ RWS_API(rws_socket) rws_socket_create(void);
 
 
 /**
+ @brief Set socket connect URL.
+ @param socket Socket object.
+ @param scheme Connect URL scheme, "http" or "ws"
+ @param scheme Connect URL host, "echo.websocket.org"
+ @param scheme Connect URL port.
+ @param scheme Connect URL path started with '/' character, "/" - for empty, "/path"
+ @code
+ rws_socket_set_url(socket, "http", "echo.websocket.org", 80, "/");
+ rws_socket_set_url(socket, "ws", "echo.websocket.org", 80, "/");
+ @endcode
+ */
+RWS_API(void) rws_socket_set_url(rws_socket socket,
+								 const char * scheme,
+								 const char * host,
+								 const int port,
+								 const char * path);
+
+/**
  @brief Set socket connect URL scheme string.
  @param socket Socket object.
  @param scheme Connect URL scheme, "http" or "ws"
@@ -199,6 +217,25 @@ RWS_API(const char *) rws_socket_get_host(rws_socket socket);
 
 
 /**
+ @brief Set socket connect URL port.
+ @param socket Socket object.
+ @param scheme Connect URL port.
+ @code
+ rws_socket_set_port(socket, 80);
+ @endcode
+ */
+RWS_API(void) rws_socket_set_port(rws_socket socket, const int port);
+
+
+/**
+ @brief Get socket connect URL port.
+ @param socket Socket object.
+ @return Connect URL port or 0.
+ */
+RWS_API(int) rws_socket_get_port(rws_socket socket);
+
+
+/**
  @brief Set socket connect URL path string.
  @param socket Socket object.
  @param scheme Connect URL path started with '/' character, "/" - for empty, "/path"
@@ -216,25 +253,6 @@ RWS_API(void) rws_socket_set_path(rws_socket socket, const char * path);
  @return Connect URL path or null.
  */
 RWS_API(const char *) rws_socket_get_path(rws_socket socket);
-
-
-/**
- @brief Set socket connect URL port.
- @param socket Socket object.
- @param scheme Connect URL port.
- @code
- rws_socket_set_port(socket, 80);
- @endcode
- */
-RWS_API(void) rws_socket_set_port(rws_socket socket, const int port);
-
-
-/**
- @brief Get socket connect URL port.
- @param socket Socket object.
- @return Connect URL port or 0.
- */
-RWS_API(int) rws_socket_get_port(rws_socket socket);
 
 
 /**
@@ -297,9 +315,6 @@ RWS_API(void) rws_socket_set_user_object(rws_socket socket, void * user_object);
 RWS_API(void *) rws_socket_get_user_object(rws_socket socket);
 
 
-/**
-
- */
 RWS_API(void) rws_socket_set_on_connected(rws_socket socket, rws_on_socket callback);
 
 
