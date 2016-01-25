@@ -255,7 +255,10 @@ RWS_API(rws_bool) rws_socket_connect(rws_socket socket);
 
 
 /**
- @brief Disconnect socket.
+ @brief Disconnect socket. 
+ @detailed Cleanup prev. send messages and start disconnection sequence.
+ SHOULD forget about this socket handle and don't use it anymore.
+ @warning Don't use this socket object handler after this command.
  @param socket Socket object.
  */
 RWS_API(void) rws_socket_disconnect(rws_socket socket);

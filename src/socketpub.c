@@ -43,6 +43,8 @@ void rws_socket_disconnect(rws_socket socket)
 	_rws_socket * s = (_rws_socket *)socket;
 	if (!s) return;
 	rws_mutex_lock(s->work_mutex);
+	rws_socket_delete_all_frames_in_list(s->send_frames);
+	rws_list_delete_clean(&s->send_frames);
 	s->command = COMMAND_DISCONNECT;
 	rws_mutex_unlock(s->work_mutex);
 }
