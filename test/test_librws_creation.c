@@ -65,7 +65,7 @@ static void on_socket_connected(rws_socket socket)
 {
 	const char * test_send_text =
 	"{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
-	
+
 	printf("\nSocket connected");
 
 	rws_socket_send_text(socket, test_send_text);
@@ -97,8 +97,10 @@ int main(int argc, char* argv[])
 	rws_socket_set_on_received_text(_socket, &on_socket_received_text);
 	rws_socket_set_on_received_bin(_socket, &on_socket_received_bin);
 
+#if !defined(RWS_APPVEYOR_CI)
+	// connection denied for client applications
 	rws_socket_connect(_socket);
-
+#endif
 
 	// main loop here
 

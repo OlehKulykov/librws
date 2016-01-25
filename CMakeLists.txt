@@ -55,6 +55,8 @@ option(RWS_OPT_SHARED "Build shared lib" ON)
 option(RWS_OPT_STATIC "Build static lib" ON)
 option(RWS_OPT_TESTS "Build librws tests" ON)
 
+option(RWS_OPT_APPVEYOR_CI "Build with appveyor ci" OFF)
+
 # C with -fPIC
 check_c_compiler_flag("-fPIC" WITH_FPIC_C)
 if(WITH_FPIC_C)
@@ -82,7 +84,9 @@ endif(MINGW)
 
 
 add_definitions(-DCMAKE_BUILD)
-
+if (RWS_OPT_APPVEYOR_CI)
+	add_definitions(-DRWS_APPVEYOR_CI)
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
