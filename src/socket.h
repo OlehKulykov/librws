@@ -49,9 +49,11 @@
 #if defined(RWS_OS_WINDOWS)
 typedef SOCKET rws_socket_t;
 #define RWS_INVALID_SOCKET INVALID_SOCKET
+#define RWS_SOCK_CLOSE(sock) closesocket(sock)
 #else
 typedef int rws_socket_t;
 #define RWS_INVALID_SOCKET -1
+#define RWS_SOCK_CLOSE(sock) close(sock)
 #endif
 
 static const char * k_rws_socket_min_http_ver = "1.1";
@@ -147,9 +149,6 @@ void rws_socket_inform_recvd_frames(_rws_socket * s);
 void rws_socket_set_option(rws_socket_t s, int option, int value);
 
 void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames);
-
-// delete all created, allocated data during work session
-void rws_socket_cleanup_session_data(_rws_socket * s);
 
 void rws_socket_check_write_error(_rws_socket * s, int error_num);
 

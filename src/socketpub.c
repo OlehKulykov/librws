@@ -33,8 +33,22 @@
 rws_bool rws_socket_connect(rws_socket socket)
 {
 	_rws_socket * s = (_rws_socket *)socket;
+	const char * params_error_msg = NULL;
 	if (!s) return rws_false;
-	if (s->port <= 0 || !s->scheme || !s->host || !s->path) return rws_false;
+
+	rws_error_delete_clean(&s->error);
+
+	if (s->port <= 0) params_error_msg = "No URL port provided";
+	if (!s->scheme) params_error_msg = "No URL scheme provided";
+	if (!s->host) params_error_msg = "No URL host provided";
+	if (!s->path) params_error_msg = "No URL path provided";
+	if (!s->on_disconnected) params_error_msg = "No on_disconnected callback provided";
+
+	if (params_error_msg)
+	{
+		s->error = rws_error_new_code_descr(rws_error_code_missed_parameter, params_error_msg);
+		return rws_false;
+	}
 	return rws_socket_create_start_work_thread(s);
 }
 
@@ -42,11 +56,28 @@ void rws_socket_disconnect(rws_socket socket)
 {
 	_rws_socket * s = (_rws_socket *)socket;
 	if (!s) return;
+	
 	rws_mutex_lock(s->work_mutex);
+
 	rws_socket_delete_all_frames_in_list(s->send_frames);
 	rws_list_delete_clean(&s->send_frames);
-	s->command = COMMAND_DISCONNECT;
-	rws_mutex_unlock(s->work_mutex);
+
+	if (s->is_connected) // connected in loop
+	{
+		s->command = COMMAND_DISCONNECT;
+		rws_mutex_unlock(s->work_mutex);
+	}
+	else if (s->work_thread) // disconnected in loop
+	{
+		s->command = COMMAND_END;
+		rws_mutex_unlock(s->work_mutex);
+	}
+	else if (s->command != COMMAND_END)
+	{
+		// not in loop
+		rws_mutex_unlock(s->work_mutex);
+		rws_socket_delete(s);
+	}
 }
 
 rws_bool rws_socket_send_text(rws_socket socket, const char * text)
@@ -91,7 +122,16 @@ void rws_socket_delete(_rws_socket * s)
 {
 	rws_socket_close(s);
 
-	rws_socket_cleanup_session_data(s);
+	rws_string_delete_clean(&s->sec_ws_accept);
+
+	rws_free_clean(&s->received);
+	s->received_size = 0;
+	s->received_len = 0;
+
+	rws_socket_delete_all_frames_in_list(s->send_frames);
+	rws_list_delete_clean(&s->send_frames);
+	rws_socket_delete_all_frames_in_list(s->recvd_frames);
+	rws_list_delete_clean(&s->recvd_frames);
 
 	rws_string_delete_clean(&s->scheme);
 	rws_string_delete_clean(&s->host);

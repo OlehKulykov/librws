@@ -26,10 +26,13 @@
 #include "memory.h"
 #include "string.h"
 
+#define RWS_CONNECT_RETRY_DELAY 200
+#define RWS_CONNECT_ATTEMPS 5
+
 unsigned int rws_socket_get_next_message_id(_rws_socket * s)
 {
-	unsigned int mess_id = ++s->next_message_id;
-	if (s->next_message_id < 9999999) s->next_message_id = 0;
+	const unsigned int mess_id = ++s->next_message_id;
+	if (mess_id > 9999999) s->next_message_id = 0;
 	return mess_id;
 }
 
@@ -332,8 +335,9 @@ void rws_socket_send_disconnect(_rws_socket * s)
 	frame->opcode = rws_opcode_connection_close;
 	rws_frame_fill_with_send_data(frame, buff, len);
 	rws_socket_send(s, frame->data, frame->data_size);
-	rws_frame_delete_clean(&frame);
+	rws_frame_delete(frame);
 	s->command = COMMAND_END;
+	rws_thread_sleep(RWS_CONNECT_RETRY_DELAY); // little bit wait after send message
 }
 
 void rws_socket_send_handshake(_rws_socket * s)
@@ -367,9 +371,6 @@ void rws_socket_send_handshake(_rws_socket * s)
 		s->command = COMMAND_INFORM_DISCONNECTED;
 	}
 }
-
-#define RWS_CONNECT_RETRY_DELAY 200
-#define RWS_CONNECT_ATTEMPS 5
 
 struct addrinfo * rws_socket_connect_getaddr_info(_rws_socket * s)
 {
@@ -454,11 +455,7 @@ void rws_socket_connect_to_host(_rws_socket * s)
 #endif
 					break;
 				}
-#if defined(RWS_OS_WINDOWS)
-				closesocket(sock);
-#else
-				close(sock);
-#endif
+				RWS_SOCK_CLOSE(sock);
 			}
 		}
 		if (sock == RWS_INVALID_SOCKET) rws_thread_sleep(RWS_CONNECT_RETRY_DELAY);
@@ -520,9 +517,9 @@ static void rws_socket_work_th_func(void * user_object)
 		rws_thread_sleep(5);
 	}
 
-	s->work_thread = NULL;
 	rws_socket_close(s);
-	rws_socket_cleanup_session_data(s);
+	s->work_thread = NULL;
+	rws_socket_delete(s);
 }
 
 rws_bool rws_socket_create_start_work_thread(_rws_socket * s)
@@ -558,13 +555,11 @@ void rws_socket_close(_rws_socket * s)
 {
 	if (s->socket != RWS_INVALID_SOCKET)
 	{
-#if defined(RWS_OS_WINDOWS)
-		closesocket(s->socket);
-		WSACleanup();
-#else
-		close(s->socket);
-#endif
+		RWS_SOCK_CLOSE(s->socket);
 		s->socket = RWS_INVALID_SOCKET;
+#if defined(RWS_OS_WINDOWS)
+		WSACleanup();
+#endif
 	}
 	s->is_connected = rws_false;
 }
@@ -625,21 +620,6 @@ void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames)
 		if (frame) rws_frame_delete(frame);
 		cur->value.object = NULL;
 	}
-}
-
-void rws_socket_cleanup_session_data(_rws_socket * s)
-{
-	rws_string_delete_clean(&s->sec_ws_accept);
-	s->work_thread = NULL;
-
-	rws_free_clean(&s->received);
-	s->received_size = 0;
-	s->received_len = 0;
-
-	rws_socket_delete_all_frames_in_list(s->send_frames);
-	rws_list_delete_clean(&s->send_frames);
-	rws_socket_delete_all_frames_in_list(s->recvd_frames);
-	rws_list_delete_clean(&s->recvd_frames);
 }
 
 void rws_socket_set_option(rws_socket_t s, int option, int value)

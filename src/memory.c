@@ -56,8 +56,8 @@ void rws_free_clean(void ** mem)
 {
 	if (mem)
 	{
-		free(*mem);
-		mem = NULL;
+		rws_free(*mem);
+		*mem = NULL;
 	}
 }
 

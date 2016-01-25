@@ -318,6 +318,8 @@ typedef enum _rws_error_code
 {
 	rws_error_code_none = 0,
 
+	rws_error_code_missed_parameter,
+
 	rws_error_code_send_handshake,
 	rws_error_code_parse_handshake,
 	rws_error_code_read_write_socket,
@@ -328,7 +330,9 @@ typedef enum _rws_error_code
 	 Reasons: an endpoint shutting down, an endpoint having received a frame too large, or an
 	 endpoint having received a frame that does not conform to the format expected by the endpoint.
 	 */
-	rws_error_code_connection_closed
+	rws_error_code_connection_closed,
+
+
 } rws_error_code;
 
 
