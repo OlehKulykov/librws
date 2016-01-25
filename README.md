@@ -67,6 +67,13 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
     "{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
   rws_socket_send_text(_socket, example_text);
 ```
+##### Disconnect or delete websocket object
+Since socket can be connected and we need to send disconnect mesage, not just lazy close, need to wait and than delete object.
+Thats why just call ```rws_socket_disconnect```, its thread safe, and forget about this socket object.
+```c
+  rws_socket_disconnect(_socket);
+  _socket = NULL;
+```
 
 
 ### License
