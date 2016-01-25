@@ -63,10 +63,10 @@ static void on_socket_received_bin(rws_socket socket, const void * data, const u
 
 static void on_socket_connected(rws_socket socket)
 {
-	printf("\nSocket connected");
-
 	const char * test_send_text =
 	"{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
+	
+	printf("\nSocket connected");
 
 	rws_socket_send_text(socket, test_send_text);
 }
