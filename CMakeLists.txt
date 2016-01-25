@@ -84,6 +84,7 @@ endif(MINGW)
 
 
 add_definitions(-DCMAKE_BUILD)
+
 if (RWS_OPT_APPVEYOR_CI)
 	add_definitions(-DRWS_APPVEYOR_CI)
 endif()

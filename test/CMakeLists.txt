@@ -28,6 +28,10 @@ link_directories(${PROJECT_BINARY_DIR})
 
 remove_definitions(-DCMAKE_BUILD)
 
+if (RWS_OPT_APPVEYOR_CI)
+	add_definitions(-DRWS_APPVEYOR_CI)
+endif()
+
 add_executable(test_librws_creation test_librws_creation.c)
 #set_property(TARGET test_librws_creation APPEND PROPERTY COMPILE_FLAGS -DLIBRWS_STATIC)
 target_link_libraries(test_librws_creation rws)
