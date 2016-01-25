@@ -31,4 +31,4 @@ build_script:
   - cmake -DRWS_OPT_APPVEYOR_CI=ON -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\librws\librws-install-dir  -DCMAKE_BUILD_TYPE=Release ..
   - cmake --build . --config Release
   - cmake --build . --config Release --target Install
-  - ctest
+ # - ctest
