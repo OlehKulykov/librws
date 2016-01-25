@@ -54,7 +54,6 @@ include(CheckCXXCompilerFlag)
 option(RWS_OPT_SHARED "Build shared lib" ON)
 option(RWS_OPT_STATIC "Build static lib" ON)
 option(RWS_OPT_TESTS "Build librws tests" ON)
-option(RWS_OPT_THREAD_SAFE "Build thread safe" ON)
 
 # C with -fPIC
 check_c_compiler_flag("-fPIC" WITH_FPIC_C)
@@ -127,9 +126,6 @@ if((NOT RWS_HAVE_PTHREAD_H) AND (NOT WIN32))
 	message(FATAL_ERROR "Can't build librws without any threading support")
 endif()
 
-if(RWS_OPT_THREAD_SAFE)
-	set(RWS_THREAD_SAFE 1)
-endif()
 
 if(NOT DEFINED CMAKE_INSTALL_LIBDIR)
 	set(CMAKE_INSTALL_LIBDIR lib)

@@ -41,14 +41,10 @@ rws_bool rws_socket_connect(rws_socket socket)
 void rws_socket_disconnect(rws_socket socket)
 {
 	_rws_socket * s = (_rws_socket *)socket;
-	if (s)
-	{
-		rws_socket_work_lock(s)
-		rws_socket_close(s);
-		rws_socket_cleanup_session_data(s);
-		s->command = COMMAND_END;
-		rws_socket_work_unlock(s)
-	}
+	if (!s) return;
+	rws_mutex_lock(s->work_mutex);
+	s->command = COMMAND_DISCONNECT;
+	rws_mutex_unlock(s->work_mutex);
 }
 
 rws_bool rws_socket_send_text(rws_socket socket, const char * text)
@@ -56,9 +52,9 @@ rws_bool rws_socket_send_text(rws_socket socket, const char * text)
 	_rws_socket * s = (_rws_socket *)socket;
 	rws_bool r = rws_false;
 	if (!s) return r;
-	rws_socket_send_lock(s)
+	rws_mutex_lock(s->send_mutex);
 	r = rws_socket_send_text_priv(s, text);
-	rws_socket_send_unlock(s)
+	rws_mutex_unlock(s->send_mutex);
 	return r;
 }
 
@@ -83,41 +79,34 @@ rws_socket rws_socket_create(void)
 	s->socket = RWS_INVALID_SOCKET;
 	s->command = COMMAND_NONE;
 
-#if defined(RWS_THREAD_SAFE)
 	s->work_mutex = rws_mutex_create_recursive();
 	s->send_mutex = rws_mutex_create_recursive();
-#endif
 
 	return s;
 }
 
-void rws_socket_delete(rws_socket socket)
+void rws_socket_delete(_rws_socket * s)
 {
-	_rws_socket * s = (_rws_socket *)socket;
-	if (!s) return;
-
 	rws_socket_close(s);
 
 	rws_socket_cleanup_session_data(s);
 
-	rws_string_delete(s->scheme);
-	rws_string_delete(s->host);
-	rws_string_delete(s->path);
+	rws_string_delete_clean(&s->scheme);
+	rws_string_delete_clean(&s->host);
+	rws_string_delete_clean(&s->path);
 
-	rws_string_delete(s->sec_ws_accept);
+	rws_string_delete_clean(&s->sec_ws_accept);
 
-	rws_error_delete(s->error);
+	rws_error_delete_clean(&s->error);
 
-	rws_free(s->received);
+	rws_free_clean(&s->received);
 	rws_socket_delete_all_frames_in_list(s->send_frames);
 	rws_list_delete_clean(&s->send_frames);
 	rws_socket_delete_all_frames_in_list(s->recvd_frames);
 	rws_list_delete_clean(&s->recvd_frames);
 
-#if defined(RWS_THREAD_SAFE)
 	rws_mutex_delete(s->work_mutex);
 	rws_mutex_delete(s->send_mutex);
-#endif
 
 	rws_free(s);
 }

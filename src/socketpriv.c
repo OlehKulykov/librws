@@ -26,15 +26,20 @@
 #include "memory.h"
 #include "string.h"
 
-static unsigned int ping_num = 0;
+unsigned int rws_socket_get_next_message_id(_rws_socket * s)
+{
+	unsigned int mess_id = ++s->next_message_id;
+	if (s->next_message_id < 9999999) s->next_message_id = 0;
+	return mess_id;
+}
+
 void rws_socket_send_ping(_rws_socket * s)
 {
-	char buff[32];
+	char buff[16];
 	size_t len = 0;
 	_rws_frame * frame = rws_frame_create();
 
-	if (++ping_num >= 9999999) ping_num = 0;
-	len = sprintf(buff, "%u", ping_num);
+	len = sprintf(buff, "%u", rws_socket_get_next_message_id(s));
 
 	frame->is_masked = rws_true;
 	frame->opcode = rws_opcode_ping;
@@ -275,7 +280,7 @@ void rws_socket_idle_send(_rws_socket * s)
 	rws_bool sending = rws_true;
 	_rws_frame * frame = NULL;
 
-	rws_socket_send_lock(s)
+	rws_mutex_lock(s->send_mutex);
 	cur = s->send_frames;
 	if (cur)
 	{
@@ -290,7 +295,7 @@ void rws_socket_idle_send(_rws_socket * s)
 		rws_list_delete_clean(&s->send_frames);
 		if (s->error) s->command = COMMAND_INFORM_DISCONNECTED;
 	}
-	rws_socket_send_unlock(s)
+	rws_mutex_unlock(s->send_mutex);
 }
 
 void rws_socket_wait_handshake_responce(_rws_socket * s)
@@ -313,6 +318,22 @@ void rws_socket_wait_handshake_responce(_rws_socket * s)
 		rws_socket_close(s);
 		s->command = COMMAND_INFORM_DISCONNECTED;
 	}
+}
+
+void rws_socket_send_disconnect(_rws_socket * s)
+{
+	char buff[16];
+	size_t len = 0;
+	_rws_frame * frame = rws_frame_create();
+
+	len = sprintf(buff, "%u", rws_socket_get_next_message_id(s));
+
+	frame->is_masked = rws_true;
+	frame->opcode = rws_opcode_connection_close;
+	rws_frame_fill_with_send_data(frame, buff, len);
+	rws_socket_send(s, frame->data, frame->data_size);
+	rws_frame_delete_clean(&frame);
+	s->command = COMMAND_END;
 }
 
 void rws_socket_send_handshake(_rws_socket * s)
@@ -418,6 +439,9 @@ void rws_socket_connect_to_host(_rws_socket * s)
 			sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 			if (sock != RWS_INVALID_SOCKET)
 			{
+				rws_socket_set_option(sock, SO_ERROR, 1); // When an error occurs on a socket, set error variable so_error and notify process
+				rws_socket_set_option(sock, SO_KEEPALIVE, 1); // Periodically test if connection is alive
+
 				if (connect(sock, p->ai_addr, p->ai_addrlen) == 0)
 				{
 					s->socket = sock;
@@ -428,8 +452,6 @@ void rws_socket_connect_to_host(_rws_socket * s)
 #else
 					fcntl(s->socket, F_SETFL, O_NONBLOCK);
 #endif
-					rws_socket_set_option(s, SO_ERROR, 1); // When an error occurs on a socket, set error variable so_error and notify process
-					rws_socket_set_option(s, SO_KEEPALIVE, 1); // Periodically test if connection is alive
 					break;
 				}
 #if defined(RWS_OS_WINDOWS)
@@ -465,20 +487,21 @@ static void rws_socket_work_th_func(void * user_object)
 	while (s->command < COMMAND_END)
 	{
 		loop_number++;
-		rws_socket_work_lock(s)
+		rws_mutex_lock(s->work_mutex);
 		switch (s->command)
 		{
 			case COMMAND_CONNECT_TO_HOST: rws_socket_connect_to_host(s); break;
 			case COMMAND_SEND_HANDSHAKE: rws_socket_send_handshake(s); break;
 			case COMMAND_WAIT_HANDSHAKE_RESPONCE: rws_socket_wait_handshake_responce(s); break;
+			case COMMAND_DISCONNECT: rws_socket_send_disconnect(s); break;
 			case COMMAND_IDLE:
-				if (loop_number >= 400) { rws_socket_send_ping(s); loop_number = 0; }
+				if (loop_number >= 400) { if (s->is_connected) rws_socket_send_ping(s); loop_number = 0; }
 				if (s->is_connected) rws_socket_idle_send(s);
 				if (s->is_connected) rws_socket_idle_recv(s);
 				break;
 			default: break;
 		}
-		rws_socket_work_unlock(s)
+		rws_mutex_unlock(s->work_mutex);
 		switch (s->command)
 		{
 			case COMMAND_INFORM_CONNECTED:
@@ -487,8 +510,6 @@ static void rws_socket_work_th_func(void * user_object)
 				break;
 			case COMMAND_INFORM_DISCONNECTED:
 				s->command = COMMAND_END;
-				assert(s->socket == RWS_INVALID_SOCKET); //don't forget close socket
-				rws_socket_cleanup_session_data(s);
 				if (s->on_disconnected) s->on_disconnected(s);
 				break;
 			case COMMAND_IDLE:
@@ -498,6 +519,10 @@ static void rws_socket_work_th_func(void * user_object)
 		}
 		rws_thread_sleep(5);
 	}
+
+	s->work_thread = NULL;
+	rws_socket_close(s);
+	rws_socket_cleanup_session_data(s);
 }
 
 rws_bool rws_socket_create_start_work_thread(_rws_socket * s)
@@ -540,8 +565,8 @@ void rws_socket_close(_rws_socket * s)
 		close(s->socket);
 #endif
 		s->socket = RWS_INVALID_SOCKET;
-		s->is_connected = rws_false;
 	}
+	s->is_connected = rws_false;
 }
 
 void rws_socket_append_recvd_frames(_rws_socket * s, _rws_frame * frame)
@@ -617,9 +642,9 @@ void rws_socket_cleanup_session_data(_rws_socket * s)
 	rws_list_delete_clean(&s->recvd_frames);
 }
 
-void rws_socket_set_option(_rws_socket * s, int option, int value)
+void rws_socket_set_option(rws_socket_t s, int option, int value)
 {
-	setsockopt(s->socket, SOL_SOCKET, option, (char *)&value, sizeof(int));
+	setsockopt(s, SOL_SOCKET, option, (char *)&value, sizeof(int));
 }
 
 void rws_socket_check_write_error(_rws_socket * s, int error_num)

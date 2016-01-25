@@ -218,9 +218,9 @@ _rws_frame * rws_frame_create(void)
 		unsigned char b[4];
 	} mask_union;
 	assert(sizeof(unsigned int) == 4);
-	mask_union.ui = 2018915346;
+//	mask_union.ui = 2018915346;
+	mask_union.ui = (rand() / (RAND_MAX / 2) + 1) * rand();
 	memcpy(f->mask, mask_union.b, 4);
-//	f->mask = (rand() / (RAND_MAX / 2) + 1) * rand();
 	return f;
 }
 

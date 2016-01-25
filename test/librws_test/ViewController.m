@@ -19,6 +19,8 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 	buff[length] = 0;
 
 	NSLog(@"Socket text: <%s>", buff);
+
+	rws_socket_disconnect(_socket);
 }
 
 static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length)

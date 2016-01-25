@@ -160,13 +160,6 @@ RWS_API(rws_socket) rws_socket_create(void);
 
 
 /**
- @brief Delete disconnected socket object.
- @param socket Socket object for delete, can be null.
- */
-RWS_API(void) rws_socket_delete(rws_socket socket);
-
-
-/**
  @brief Set socket connect URL scheme string.
  @param socket Socket object.
  @param scheme Connect URL scheme, "http" or "ws"

@@ -71,6 +71,8 @@ typedef struct _rws_socket_struct
 
 	int command;
 
+	unsigned int next_message_id;
+
 	rws_bool is_connected; // sock connected + handshake done
 
 	void * user_object;
@@ -88,11 +90,8 @@ typedef struct _rws_socket_struct
 
 	_rws_error * error;
 
-#if defined(RWS_THREAD_SAFE)
 	rws_mutex work_mutex;
 	rws_mutex send_mutex;
-#endif
-
 } _rws_socket;
 
 rws_bool rws_socket_process_handshake_responce(_rws_socket * s);
@@ -119,7 +118,11 @@ void rws_socket_idle_send(_rws_socket * s);
 
 void rws_socket_wait_handshake_responce(_rws_socket * s);
 
+unsigned int rws_socket_get_next_message_id(_rws_socket * s);
+
 void rws_socket_send_ping(_rws_socket * s);
+
+void rws_socket_send_disconnect(_rws_socket * s);
 
 void rws_socket_send_handshake(_rws_socket * s);
 
@@ -141,7 +144,7 @@ rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text);
 
 void rws_socket_inform_recvd_frames(_rws_socket * s);
 
-void rws_socket_set_option(_rws_socket * s, int option, int value);
+void rws_socket_set_option(rws_socket_t s, int option, int value);
 
 void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames);
 
@@ -150,19 +153,7 @@ void rws_socket_cleanup_session_data(_rws_socket * s);
 
 void rws_socket_check_write_error(_rws_socket * s, int error_num);
 
-#if defined(RWS_THREAD_SAFE)
-#define rws_socket_work_lock(s) rws_mutex_lock(s->work_mutex);
-#define rws_socket_work_unlock(s) rws_mutex_unlock(s->work_mutex);
-#define rws_socket_send_lock(s) rws_mutex_lock(s->send_mutex);
-#define rws_socket_send_unlock(s) rws_mutex_unlock(s->send_mutex);
-#else
-#define rws_socket_work_lock(s)
-#define rws_socket_work_unlock(s)
-#define rws_socket_send_lock(s)
-#define rws_socket_send_unlock(s)
-#endif
-
-
+void rws_socket_delete(_rws_socket * s);
 
 #define COMMAND_IDLE -1
 #define COMMAND_NONE 0
@@ -171,7 +162,7 @@ void rws_socket_check_write_error(_rws_socket * s, int error_num);
 #define COMMAND_WAIT_HANDSHAKE_RESPONCE 3
 #define COMMAND_INFORM_CONNECTED 4
 #define COMMAND_INFORM_DISCONNECTED 5
-
+#define COMMAND_DISCONNECT 6
 
 #define COMMAND_END 9999
 
