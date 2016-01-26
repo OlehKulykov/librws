@@ -279,7 +279,7 @@ RWS_API(rws_bool) rws_socket_connect(rws_socket socket);
  @warning Don't use this socket object handler after this command.
  @param socket Socket object.
  */
-RWS_API(void) rws_socket_disconnect(rws_socket socket);
+RWS_API(void) rws_socket_disconnect_and_release(rws_socket socket);
 
 
 /**

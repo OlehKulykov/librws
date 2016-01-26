@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 	assert(rws_socket_get_path(socket) == NULL);						printf("%i\n", (int)__LINE__);
 
 
-	rws_socket_disconnect(socket);
+	rws_socket_disconnect_and_release(socket);
 
 	return 0;
 }

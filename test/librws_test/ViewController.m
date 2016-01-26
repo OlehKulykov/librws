@@ -20,7 +20,7 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 
 	NSLog(@"Socket text: <%s>", buff);
 
-//	rws_socket_disconnect(_socket);
+//	rws_socket_disconnect_and_release(_socket);
 }
 
 static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length)
@@ -57,7 +57,7 @@ static void rws_test()
 {
 	rws_socket socket = rws_socket_create();
 	assert(socket);
-	rws_socket_disconnect(socket);
+	rws_socket_disconnect_and_release(socket);
 	socket = rws_socket_create();
 	assert(socket);
 

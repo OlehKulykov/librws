@@ -52,7 +52,7 @@ rws_bool rws_socket_connect(rws_socket socket)
 	return rws_socket_create_start_work_thread(s);
 }
 
-void rws_socket_disconnect(rws_socket socket)
+void rws_socket_disconnect_and_release(rws_socket socket)
 {
 	_rws_socket * s = (_rws_socket *)socket;
 	if (!s) return;
