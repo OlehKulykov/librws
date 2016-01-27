@@ -23,7 +23,7 @@ Tiny, cross platform websocket client C library.
   s.tvos.deployment_target = '9.0'
 
 # Build  
-  s.source_files = 'src/*.{h,с}'
+  s.source_files = 'src/*.{h,c}'
   s.public_header_files = '*.h'
   s.requires_arc = false
   s.libraries = 'pthread', 'stdc++'
