@@ -24,7 +24,7 @@ Tiny, cross platform websocket client C library.
 
 # Build  
   s.source_files = 'src/*.{h,с}'
-  s.public_header_files = 'librws.h'
+  s.public_header_files = '*.h'
   s.requires_arc = false
   s.libraries = 'pthread', 'stdc++'
 end
