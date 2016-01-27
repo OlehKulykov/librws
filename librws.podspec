@@ -19,12 +19,12 @@ Tiny, cross platform websocket client C library.
 # Platforms
   s.ios.deployment_target = "7.0"
   s.osx.deployment_target = "10.7"
-#  s.watchos.deployment_target = '2.0'
-#  s.tvos.deployment_target = '9.0'
+  s.watchos.deployment_target = '2.0'
+  s.tvos.deployment_target = '9.0'
 
 # Build  
-  s.source_files = 'src/*.{h,c}'
+  s.source_files = '*.h', 'src/*.{h,c}'
   s.public_header_files = '*.h'
-  s.requires_arc = true
+  s.requires_arc = false
   s.libraries = 'pthread', 'stdc++'
 end
