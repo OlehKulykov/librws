@@ -4,7 +4,5 @@
 
 @interface ViewController : UIViewController
 
-- (void) log:(const char *) mess;
-
 @end
 

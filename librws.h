@@ -24,7 +24,14 @@
 #ifndef __LIBRWS_H__
 #define __LIBRWS_H__ 1
 
+
 #include <stdio.h>
+
+
+#define RWS_VERSION_MAJOR 1
+#define RWS_VERSION_MINOR 0
+#define RWS_VERSION_PATCH 0
+
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)

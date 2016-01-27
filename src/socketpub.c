@@ -24,6 +24,7 @@
 #include "../librws.h"
 #include "socket.h"
 #include "memory.h"
+#include <assert.h>
 
 #if !defined(RWS_OS_WINDOWS)
 #include <signal.h>
@@ -99,6 +100,14 @@ void rws_socket_handle_sigpipe(int signal_number)
 }
 #endif
 
+#define STRING_I(s) #s
+#define TO_STRING(s) STRING_I(s)
+
+void rws_socket_check_info(const char * info)
+{
+	assert(info);
+}
+
 rws_socket rws_socket_create(void)
 {
 	_rws_socket * s = (_rws_socket *)rws_malloc_zero(sizeof(_rws_socket));
@@ -114,6 +123,9 @@ rws_socket rws_socket_create(void)
 
 	s->work_mutex = rws_mutex_create_recursive();
 	s->send_mutex = rws_mutex_create_recursive();
+
+	static const char * info = "librws ver: " TO_STRING(RWS_VERSION_MAJOR) "." TO_STRING(RWS_VERSION_MINOR) "." TO_STRING(RWS_VERSION_PATCH) "\n";
+	rws_socket_check_info(info);
 
 	return s;
 }

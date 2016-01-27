@@ -16,7 +16,6 @@
 		3D8A11AE1C4E9C130005F9B9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D8A11AC1C4E9C130005F9B9 /* Main.storyboard */; };
 		3D8A11B01C4E9C130005F9B9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D8A11AF1C4E9C130005F9B9 /* Assets.xcassets */; };
 		3D8A11B31C4E9C130005F9B9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D8A11B11C4E9C130005F9B9 /* LaunchScreen.storyboard */; };
-		3D8A11BE1C4E9C140005F9B9 /* librws_testTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11BD1C4E9C140005F9B9 /* librws_testTests.m */; };
 		3D8A11CB1C4E9CAE0005F9B9 /* librws.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11C91C4E9CAE0005F9B9 /* librws.c */; };
 		3D8A11D01C4E9E280005F9B9 /* common.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11CE1C4E9E280005F9B9 /* common.c */; };
 		3D962B591C50ABA10074A7C4 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D962B571C50ABA10074A7C4 /* thread.c */; };
@@ -24,8 +23,19 @@
 		3DB6A4D81C4ED61B00DDBEAF /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4D61C4ED61B00DDBEAF /* memory.c */; };
 		3DB6A4ED1C4EDCFF00DDBEAF /* socketpriv.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4EB1C4EDCFF00DDBEAF /* socketpriv.c */; };
 		3DB6A4F21C4EF4EA00DDBEAF /* string.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4F01C4EF4EA00DDBEAF /* string.c */; };
-		3DB6A4F41C4EF8E400DDBEAF /* test_librws_socket_get_set.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4F31C4EF8E400DDBEAF /* test_librws_socket_get_set.c */; };
-		3DED42521C5595B6003AB7EC /* test_librws_creation.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4EE1C4EEB2600DDBEAF /* test_librws_creation.c */; };
+		3DE1B2721C58E67A00966F56 /* creation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1B2711C58E67A00966F56 /* creation.m */; };
+		3DE1B2731C58E6AD00966F56 /* librws.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11C91C4E9CAE0005F9B9 /* librws.c */; };
+		3DE1B2741C58E6B000966F56 /* frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D842AC41C5051A500045811 /* frame.c */; };
+		3DE1B2751C58E6B800966F56 /* string.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4F01C4EF4EA00DDBEAF /* string.c */; };
+		3DE1B2761C58E6BD00966F56 /* socketpub.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DA62A1E1C511D760006D583 /* socketpub.c */; };
+		3DE1B2771C58E6BF00966F56 /* socketpriv.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4EB1C4EDCFF00DDBEAF /* socketpriv.c */; };
+		3DE1B2781C58E6C200966F56 /* common.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D8A11CE1C4E9E280005F9B9 /* common.c */; };
+		3DE1B2791C58E6C600966F56 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6A4D61C4ED61B00DDBEAF /* memory.c */; };
+		3DE1B27A1C58E6C900966F56 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D842AB81C50250100045811 /* error.c */; };
+		3DE1B27B1C58E6CC00966F56 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D962B571C50ABA10074A7C4 /* thread.c */; };
+		3DE1B27C1C58E6CF00966F56 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D4C00971C513A7D0053FE93 /* list.c */; };
+		3DE1B27E1C58E85300966F56 /* getterAndSetters.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1B27D1C58E85300966F56 /* getterAndSetters.m */; };
+		3DE1B2801C58ECCE00966F56 /* connection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1B27F1C58ECCE00966F56 /* connection.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +66,6 @@
 		3D8A11B21C4E9C130005F9B9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3D8A11B41C4E9C130005F9B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D8A11B91C4E9C140005F9B9 /* librws_testTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = librws_testTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3D8A11BD1C4E9C140005F9B9 /* librws_testTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = librws_testTests.m; sourceTree = "<group>"; };
 		3D8A11BF1C4E9C140005F9B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D8A11C91C4E9CAE0005F9B9 /* librws.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = librws.c; path = ../src/librws.c; sourceTree = "<group>"; };
 		3D8A11CC1C4E9CC40005F9B9 /* librws.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = librws.h; path = ../librws.h; sourceTree = "<group>"; };
@@ -73,6 +82,9 @@
 		3DB6A4F01C4EF4EA00DDBEAF /* string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = string.c; path = ../src/string.c; sourceTree = "<group>"; };
 		3DB6A4F11C4EF4EA00DDBEAF /* string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = string.h; path = ../src/string.h; sourceTree = "<group>"; };
 		3DB6A4F31C4EF8E400DDBEAF /* test_librws_socket_get_set.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_librws_socket_get_set.c; sourceTree = SOURCE_ROOT; };
+		3DE1B2711C58E67A00966F56 /* creation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = creation.m; sourceTree = "<group>"; };
+		3DE1B27D1C58E85300966F56 /* getterAndSetters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = getterAndSetters.m; sourceTree = "<group>"; };
+		3DE1B27F1C58ECCE00966F56 /* connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = connection.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,8 +153,10 @@
 			children = (
 				3DB6A4F31C4EF8E400DDBEAF /* test_librws_socket_get_set.c */,
 				3DB6A4EE1C4EEB2600DDBEAF /* test_librws_creation.c */,
-				3D8A11BD1C4E9C140005F9B9 /* librws_testTests.m */,
 				3D8A11BF1C4E9C140005F9B9 /* Info.plist */,
+				3DE1B2711C58E67A00966F56 /* creation.m */,
+				3DE1B27D1C58E85300966F56 /* getterAndSetters.m */,
+				3DE1B27F1C58ECCE00966F56 /* connection.m */,
 			);
 			path = librws_testTests;
 			sourceTree = "<group>";
@@ -301,9 +315,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DED42521C5595B6003AB7EC /* test_librws_creation.c in Sources */,
-				3D8A11BE1C4E9C140005F9B9 /* librws_testTests.m in Sources */,
-				3DB6A4F41C4EF8E400DDBEAF /* test_librws_socket_get_set.c in Sources */,
+				3DE1B2751C58E6B800966F56 /* string.c in Sources */,
+				3DE1B2781C58E6C200966F56 /* common.c in Sources */,
+				3DE1B2791C58E6C600966F56 /* memory.c in Sources */,
+				3DE1B27A1C58E6C900966F56 /* error.c in Sources */,
+				3DE1B2761C58E6BD00966F56 /* socketpub.c in Sources */,
+				3DE1B27E1C58E85300966F56 /* getterAndSetters.m in Sources */,
+				3DE1B2741C58E6B000966F56 /* frame.c in Sources */,
+				3DE1B2731C58E6AD00966F56 /* librws.c in Sources */,
+				3DE1B27B1C58E6CC00966F56 /* thread.c in Sources */,
+				3DE1B27C1C58E6CF00966F56 /* list.c in Sources */,
+				3DE1B2801C58ECCE00966F56 /* connection.m in Sources */,
+				3DE1B2721C58E67A00966F56 /* creation.m in Sources */,
+				3DE1B2771C58E6BF00966F56 /* socketpriv.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
