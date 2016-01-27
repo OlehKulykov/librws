@@ -16,7 +16,7 @@
 ### Installation with CocoaPods
 #### Podfile
 ```ruby
-pod 'librws'
+pod 'librws', :inhibit_warnings => true
 ```
 
 
