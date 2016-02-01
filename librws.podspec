@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
 # Common settings
   s.name         = "librws"
-  s.version      = "1.0.0"
+  s.version      = "1.1.0"
   s.summary      = " Tiny, cross platform websocket client C library"
   s.description  = <<-DESC
 Tiny, cross platform websocket client C library.
@@ -23,8 +23,8 @@ Tiny, cross platform websocket client C library.
   s.tvos.deployment_target = '9.0'
 
 # Build  
-  s.source_files = '*.h', 'src/*.{h,c}'
-  s.public_header_files = '*.h'
-  s.requires_arc = false
+  s.source_files = '*.h', 'src/*.{h,c}', 'contrib/objc/*.{h,m}'
+  s.public_header_files = '*.h', 'contrib/objc/*.h'
+  s.requires_arc = true
   s.libraries = 'pthread', 'stdc++'
 end

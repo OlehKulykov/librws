@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D1B9EEF1C5F03810021C58B /* RWSSocketObjc.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */; };
+		3D1B9EF01C5F03840021C58B /* RWSSocketObjc.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */; };
+		3D1B9EF21C5F04BA0021C58B /* ObjcContrib.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1B9EF11C5F04BA0021C58B /* ObjcContrib.m */; };
 		3D4C00991C513A7D0053FE93 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D4C00971C513A7D0053FE93 /* list.c */; };
 		3D842ABA1C50250100045811 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D842AB81C50250100045811 /* error.c */; };
 		3D842AC61C5051A500045811 /* frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D842AC41C5051A500045811 /* frame.c */; };
@@ -49,6 +52,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D1B9EED1C5F03810021C58B /* RWSSocketObjc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RWSSocketObjc.h; path = ../contrib/objc/RWSSocketObjc.h; sourceTree = "<group>"; };
+		3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RWSSocketObjc.m; path = ../contrib/objc/RWSSocketObjc.m; sourceTree = "<group>"; };
+		3D1B9EF11C5F04BA0021C58B /* ObjcContrib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcContrib.m; sourceTree = "<group>"; };
 		3D4C00971C513A7D0053FE93 /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list.c; path = ../src/list.c; sourceTree = "<group>"; };
 		3D4C00981C513A7D0053FE93 /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = list.h; path = ../src/list.h; sourceTree = "<group>"; };
 		3D842AB81C50250100045811 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../src/error.c; sourceTree = "<group>"; };
@@ -105,6 +111,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3D1B9EEC1C5F034D0021C58B /* contrib */ = {
+			isa = PBXGroup;
+			children = (
+				3D1B9EED1C5F03810021C58B /* RWSSocketObjc.h */,
+				3D1B9EEE1C5F03810021C58B /* RWSSocketObjc.m */,
+			);
+			name = contrib;
+			sourceTree = "<group>";
+		};
 		3D8A11971C4E9C130005F9B9 = {
 			isa = PBXGroup;
 			children = (
@@ -157,6 +172,7 @@
 				3DE1B2711C58E67A00966F56 /* creation.m */,
 				3DE1B27D1C58E85300966F56 /* getterAndSetters.m */,
 				3DE1B27F1C58ECCE00966F56 /* connection.m */,
+				3D1B9EF11C5F04BA0021C58B /* ObjcContrib.m */,
 			);
 			path = librws_testTests;
 			sourceTree = "<group>";
@@ -164,6 +180,7 @@
 		3D8A11C81C4E9C980005F9B9 /* librws */ = {
 			isa = PBXGroup;
 			children = (
+				3D1B9EEC1C5F034D0021C58B /* contrib */,
 				3D8A11CD1C4E9E090005F9B9 /* src */,
 				3D8A11CC1C4E9CC40005F9B9 /* librws.h */,
 			);
@@ -304,6 +321,7 @@
 				3D842ABA1C50250100045811 /* error.c in Sources */,
 				3D962B591C50ABA10074A7C4 /* thread.c in Sources */,
 				3D8A11AB1C4E9C130005F9B9 /* ViewController.m in Sources */,
+				3D1B9EEF1C5F03810021C58B /* RWSSocketObjc.m in Sources */,
 				3D8A11A81C4E9C130005F9B9 /* AppDelegate.m in Sources */,
 				3DB6A4ED1C4EDCFF00DDBEAF /* socketpriv.c in Sources */,
 				3DB6A4D81C4ED61B00DDBEAF /* memory.c in Sources */,
@@ -324,6 +342,8 @@
 				3DE1B2741C58E6B000966F56 /* frame.c in Sources */,
 				3DE1B2731C58E6AD00966F56 /* librws.c in Sources */,
 				3DE1B27B1C58E6CC00966F56 /* thread.c in Sources */,
+				3D1B9EF21C5F04BA0021C58B /* ObjcContrib.m in Sources */,
+				3D1B9EF01C5F03840021C58B /* RWSSocketObjc.m in Sources */,
 				3DE1B27C1C58E6CF00966F56 /* list.c in Sources */,
 				3DE1B2801C58ECCE00966F56 /* connection.m in Sources */,
 				3DE1B2721C58E67A00966F56 /* creation.m in Sources */,

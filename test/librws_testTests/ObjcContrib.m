@@ -22,17 +22,26 @@
 
 
 #import <XCTest/XCTest.h>
-#import "librws.h"
+#import "RWSSocketObjc.h"
 
-@interface creation : XCTestCase
+@interface ObjcContrib : XCTestCase
+
+@property (nonatomic) RWSSocketObjc * socket;
 
 @end
 
-@implementation creation
+@implementation ObjcContrib
 
-- (void)setUp {
+- (void)setUp
+{
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+
+	self.socket = [[RWSSocketObjc alloc] init];
+	XCTAssertNil(self.socket);
+
+	self.socket = [[RWSSocketObjc alloc] initWithURL:[NSURL URLWithString:@"ws://echo.websocket.org:80"]];
+	XCTAssertNotNil(self.socket);
 }
 
 - (void)tearDown {
@@ -40,21 +49,16 @@
     [super tearDown];
 }
 
-- (void) testCreate
+- (void)testConnect
 {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
-	rws_socket * socket = rws_socket_create();
-	XCTAssert(socket != NULL, @"Not created");
-	rws_socket_disconnect_and_release(socket);
-
-	const rws_bool expressionTrue = rws_true;
-	XCTAssertTrue(expressionTrue, @"rws_true is not true");
-	XCTAssertTrue(rws_true, @"rws_true is not true");
-
-	const rws_bool expressionFalse = rws_false;
-	XCTAssertFalse(expressionFalse, @"rws_false is not false");
-	XCTAssertFalse(rws_false, @"rws_false is not false");
+	[self.socket connect];
+	
+	while (![self.socket isConnected])
+	{
+		[NSThread sleepForTimeInterval:0.1];
+	}
 }
 
 - (void)testPerformanceExample {
