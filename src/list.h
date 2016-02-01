@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __LIST_H__
-#define __LIST_H__ 1
+#ifndef __RWS_LIST_H__
+#define __RWS_LIST_H__ 1
 
 #include <stdio.h>
 

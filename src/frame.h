@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __FRAME_H__
-#define __FRAME_H__ 1
+#ifndef __RWS_FRAME_H__
+#define __RWS_FRAME_H__ 1
 
 #include "../librws.h"
 #include "common.h"

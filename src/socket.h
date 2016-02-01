@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __SOCKET_H__
-#define __SOCKET_H__ 1
+#ifndef __RWS_SOCKET_H__
+#define __RWS_SOCKET_H__ 1
 
 #include "common.h"
 

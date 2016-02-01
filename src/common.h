@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __COMMON_H__
-#define __COMMON_H__ 1
+#ifndef __RWS_COMMON_H__
+#define __RWS_COMMON_H__ 1
 
 #include <stdio.h>
 

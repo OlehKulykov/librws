@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ERROR_H__
-#define __ERROR_H__ 1
+#ifndef __RWS_ERROR_H__
+#define __RWS_ERROR_H__ 1
 
 #include "string.h"
 

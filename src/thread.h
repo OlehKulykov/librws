@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __THREAD_H__
-#define __THREAD_H__ 1
+#ifndef __RWS_THREAD_H__
+#define __RWS_THREAD_H__ 1
 
 #include <stdio.h>
 

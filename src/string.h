@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __STRING_H__
-#define __STRING_H__ 1
+#ifndef __RWS_STRING_H__
+#define __RWS_STRING_H__ 1
 
 #include <stdio.h>
 #include <stdlib.h>

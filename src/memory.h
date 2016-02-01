@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __MEMORY_H__
-#define __MEMORY_H__ 1
+#ifndef __RWS_MEMORY_H__
+#define __RWS_MEMORY_H__ 1
 
 #include <stdio.h>
 #include <stdlib.h>
