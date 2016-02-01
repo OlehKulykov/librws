@@ -25,31 +25,89 @@
 
 @class RWSSocketObjc;
 
+/**
+ @brief Websocket delegate protocol.
+ All methods called from main thread.
+ */
 @protocol RWSSocketObjcDelegate <NSObject>
 
 @required
+/**
+ @brief Websocket connected.
+ @detailed Connection extablished and handshake done. Ready to send and receive.
+ @param socket Socket object.
+ */
 - (void) onRWSSocketConnected:(nonnull RWSSocketObjc *) socket;
 
+
+/**
+ @brief Socket client disconnected.
+ @detailed Internal socket already freed and dealocated. Reconnect once again.
+ @param socket Socket object.
+ @param error Disconnect error.
+ */
 - (void) onRWSSocketDisconnected:(nonnull RWSSocketObjc *) socket
 					   withError:(nullable NSError *) error;
 
 @optional
+/**
+ @brief Socket received non empty text.
+ @param socket Socket object.
+ @param text Non empty text.
+ */
 - (void) onRWSSocket:(nonnull RWSSocketObjc *) socket receivedText:(nonnull NSString *) text;
 
+
+
+/**
+ @brief Socket received non empty binary data.
+ @param socket Socket object.
+ @param text Non binary data.
+ */
 - (void) onRWSSocket:(nonnull RWSSocketObjc *) socket receivedData:(nonnull NSData *) data;
 
 @end
 
+
+/**
+ @brief Objective-C web socket wrapper.
+ */
 @interface RWSSocketObjc : NSObject
 
+
+/**
+ @brief Read/write delegate object.
+ */
 @property (nonatomic, weak) id<RWSSocketObjcDelegate> delegate;
 
+
+/**
+ @brief Check websocket exists and connected.
+ */
 @property (nonatomic, readonly) BOOL isConnected;
 
+
+/**
+ @brief Send text to connected websocket.
+ @param text Text for sending.
+ @return YES - socket exist, connected and text not empty, othervice NO.
+ */
 - (BOOL) sendText:(nonnull NSString *) text;
 
+
+/**
+ @brief Connect to server.
+ @detailed Remove prev. socket object and make new connection.
+ @return YES - started connection sequence, othervice NO.
+ */
 - (BOOL) connect;
 
+
+/**
+ @brief Initialize web socket with destination url.
+ @param url Connection URL. Should not be nil.
+ @return Websocket object or nil on error.
+ */
 - (nullable id) initWithURL:(nonnull NSURL *) url;
 
 

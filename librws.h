@@ -291,6 +291,7 @@ RWS_API(void) rws_socket_disconnect_and_release(rws_socket socket);
 
 /**
  @brief Check is socket has connection to host and handshake(sucessfully done).
+ @detailed Thread safe getter.
  @param socket Socket object.
  @return trw_true - connected to host and handshacked, otherwice rws_false.
  */
@@ -299,6 +300,7 @@ RWS_API(rws_bool) rws_socket_is_connected(rws_socket socket);
 
 /**
  @brief Send text to connect socket.
+ @detailed Thread safe method.
  @param socket Socket object.
  @param text Text string for sending.
  @return rws_true - socket and text exists and placed to send queue, otherwice rws_false.

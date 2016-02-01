@@ -303,6 +303,11 @@ void rws_socket_set_on_received_bin(rws_socket socket, rws_on_socket_recvd_bin c
 rws_bool rws_socket_is_connected(rws_socket socket)
 {
 	_rws_socket * s = (_rws_socket *)socket;
-	return s ? s->is_connected : rws_false;
+	rws_bool r = rws_false;
+	if (!s) return r;
+	rws_mutex_lock(s->send_mutex);
+	r = s->is_connected;
+	rws_mutex_unlock(s->send_mutex);
+	return r;
 }
 

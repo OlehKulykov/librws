@@ -103,7 +103,6 @@ static void onRWSSocketObjcRecvdBin(rws_socket socket, const void * data, const 
 {
 	if (_socket)
 	{
-		rws_socket_set_on_disconnected(_socket, NULL);
 		rws_socket_set_user_object(_socket, NULL);
 		rws_socket_disconnect_and_release(_socket);
 		_socket = NULL;
@@ -112,8 +111,8 @@ static void onRWSSocketObjcRecvdBin(rws_socket socket, const void * data, const 
 
 - (BOOL) connect
 {
-	if (!_url) return NO;
 	[self cleanup];
+	if (!_url) return NO;
 
 	_socket = rws_socket_create();
 	rws_socket_set_scheme(_socket, [[_url scheme] UTF8String]);
@@ -131,7 +130,7 @@ static void onRWSSocketObjcRecvdBin(rws_socket socket, const void * data, const 
 	rws_socket_set_on_received_text(_socket, &onRWSSocketObjcRecvdText);
 	rws_socket_set_on_received_bin(_socket, &onRWSSocketObjcRecvdBin);
 
-	return (rws_socket_connect(_socket)) ? YES : NO;
+	return rws_socket_connect(_socket) ? YES : NO;
 }
 
 - (BOOL) isConnected
