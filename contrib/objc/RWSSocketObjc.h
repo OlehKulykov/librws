@@ -34,7 +34,8 @@
 @required
 /**
  @brief Websocket connected.
- @detailed Connection extablished and handshake done. Ready to send and receive.
+ @detailed Connection extablished and handshake done. 
+ Web socket ready to send and receive.
  @param socket Socket object.
  */
 - (void) onRWSSocketConnected:(nonnull RWSSocketObjc *) socket;
@@ -42,7 +43,8 @@
 
 /**
  @brief Socket client disconnected.
- @detailed Internal socket already freed and dealocated. Reconnect once again.
+ @detailed Internal socket already freed and dealocated. 
+ Connect once again.
  @param socket Socket object.
  @param error Disconnect error.
  */
@@ -71,12 +73,13 @@
 
 /**
  @brief Objective-C web socket wrapper.
+ @detailed Internal implementation use C library part.
  */
 @interface RWSSocketObjc : NSObject
 
 
 /**
- @brief Read/write delegate object.
+ @brief Weak read/write reference to delegate object.
  */
 @property (nonatomic, weak) id<RWSSocketObjcDelegate> delegate;
 
@@ -88,7 +91,8 @@
 
 
 /**
- @brief Send text to connected websocket.
+ @brief Send text to connected web socket.
+ @detailed Add text frame to send queue.
  @param text Text for sending.
  @return YES - socket exist, connected and text not empty, othervice NO.
  */
@@ -97,7 +101,7 @@
 
 /**
  @brief Connect to server.
- @detailed Remove prev. socket object and make new connection.
+ @detailed Remove previos socket object and make new connection.
  @return YES - started connection sequence, othervice NO.
  */
 - (BOOL) connect;
