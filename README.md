@@ -7,7 +7,7 @@
 
 
 ### Features
-* No additional dependecies, exceprt ```pthread``` on unix-like platforms and Win threads on Windows
+* No additional dependecies, except ```pthread``` on unix-like platforms and Win threads on Windows
 * Single header library interface ```librws.h``` with public methods
 * Thread safe
 * Send/receive logic in background thread
