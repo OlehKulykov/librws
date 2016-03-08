@@ -61,7 +61,7 @@ build_script:
 
 
 after_build:
-  - 7z a -t7z -mx=9 librws-win-%PLATFORM%-%APPVEYOR_REPO_BRANCH%-%APPVEYOR_BUILD_VERSION%.7z c:\dev\librws\librws-install-win-%PLATFORM%
+  - 7z a -t7z -mx=9 -xr!bin librws-win-%PLATFORM%-%APPVEYOR_REPO_BRANCH%-%APPVEYOR_BUILD_VERSION%.7z c:\dev\librws\librws-install-win-%PLATFORM%
 
 
 artifacts:
