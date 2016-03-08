@@ -345,25 +345,25 @@ void rws_socket_send_handshake(_rws_socket * s)
 	char buff[512];
 	char * ptr = buff;
 	size_t writed = 0;
-	writed = rws_sprintf(ptr, 512, "GET %s HTTP/%s\r\n", s->path, k_rws_socket_min_http_ver); ptr += writed;
+	writed = rws_sprintf(ptr, 512, "GET %s HTTP/%s\r\n", s->path, k_rws_socket_min_http_ver);
 
 //	ptr += sprintf(ptr, "Host: %s\r\n", s->host);
 
-	if (s->port == 80) { writed += rws_sprintf(ptr, 512 - writed, "Host: %s\r\n", s->host); ptr += writed; }
-	else { writed += rws_sprintf(ptr, 512 - writed, "Host: %s:%i\r\n", s->host, s->port); ptr += writed; }
+	if (s->port == 80) writed += rws_sprintf(ptr + writed, 512 - writed, "Host: %s\r\n", s->host);
+	else writed += rws_sprintf(ptr + writed, 512 - writed, "Host: %s:%i\r\n", s->host, s->port);
 
-	writed += rws_sprintf(ptr, 512 - writed,
+	writed += rws_sprintf(ptr + writed, 512 - writed,
 						  "Upgrade: websocket\r\n"
 						  "Connection: Upgrade\r\n"
 						  "Origin: %s://%s\r\n",
-						  s->scheme, s->host); ptr += writed;
+						  s->scheme, s->host);
 
-	writed += rws_sprintf(ptr, 512 - writed,
+	writed += rws_sprintf(ptr + writed, 512 - writed,
 						  "Sec-WebSocket-Key: %s\r\n"
 						  "Sec-WebSocket-Protocol: chat, superchat\r\n"
 						  "Sec-WebSocket-Version: 13\r\n"
 						  "\r\n",
-						  "dGhlIHNhbXBsZSBub25jZQ=="); ptr += writed;
+						  "dGhlIHNhbXBsZSBub25jZQ==");
 
 	if (rws_socket_send(s, buff, writed))
 	{
