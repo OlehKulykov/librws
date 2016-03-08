@@ -50,9 +50,6 @@ build:
   verbosity: detailed
 
 
-build:
-
-
 build_script:
   - cd c:\dev\librws
   - md build
