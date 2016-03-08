@@ -108,7 +108,7 @@ rws_bool rws_socket_process_handshake_responce(_rws_socket * s)
 	if (!sub) return rws_false;
 	
 	sub += 5;
-	if (sscanf(sub, "%f %i", &http_ver, &http_code) != 2)
+	if (rws_sscanf(sub, "%f %i", &http_ver, &http_code) != 2)
 	{
 		http_ver = -1; http_code = -1;
 	}
@@ -683,7 +683,7 @@ void rws_socket_check_write_error(_rws_socket * s, int error_num)
 		// recv errors
 		case ECONNREFUSED: // A remote host refused to allow the network connection (typically because it is not running the requested service).
 
-			s->error = rws_error_new_code_descr(rws_error_code_read_write_socket, strerror(code));
+			s->error = rws_error_new_code_descr(rws_error_code_read_write_socket, rws_strerror(code));
 			break;
 
 		default:

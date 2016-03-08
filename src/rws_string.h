@@ -31,8 +31,12 @@
 
 #if defined(_MSC_VER)
 #define rws_sprintf(s,l,f,...) sprintf_s(s,l,f,__VA_ARGS__)
+#define rws_sscanf(s,f,...) sscanf_s(s,f,__VA_ARGS__)
+#define rws_strerror(e) strerror(e)
 #else
 #define rws_sprintf(s,l,f,...) sprintf(s,f,__VA_ARGS__)
+#define rws_sscanf(s,f,...) sscanf(s,f,__VA_ARGS__)
+#define rws_strerror(e) strerror(e)
 #endif
 
 char * rws_string_copy(const char * str);
