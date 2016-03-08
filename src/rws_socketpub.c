@@ -22,8 +22,9 @@
 
 
 #include "../librws.h"
-#include "socket.h"
-#include "memory.h"
+#include "rws_socket.h"
+#include "rws_memory.h"
+#include "rws_string.h"
 #include <assert.h>
 
 #if !defined(RWS_OS_WINDOWS)

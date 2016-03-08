@@ -21,8 +21,8 @@
  */
 
 
-#include "string.h"
-#include "memory.h"
+#include "rws_string.h"
+#include "rws_memory.h"
 
 char * rws_string_copy(const char * str)
 {

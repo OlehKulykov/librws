@@ -1,4 +1,7 @@
-Changes on version 1.1.0 (current):
+Changes on version 1.2.0 (current):
+- Rename source files to avoid duplication with other software.
+
+Changes on version 1.1.0:
 - Add Objective-C client.
 
 Changes on version 1.0.0:

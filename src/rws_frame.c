@@ -21,8 +21,8 @@
  */
 
 
-#include "frame.h"
-#include "memory.h"
+#include "rws_frame.h"
+#include "rws_memory.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -129,7 +129,7 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 
 void rws_frame_create_header(_rws_frame * f, unsigned char * header, const size_t data_size)
 {
-	const unsigned int size = data_size;
+	const unsigned int size = (unsigned int)data_size;
 
 	*header++ = 0x80 | f->opcode;
 	if (size < 126)

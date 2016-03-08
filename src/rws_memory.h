@@ -21,25 +21,21 @@
  */
 
 
-#ifndef __RWS_STRING_H__
-#define __RWS_STRING_H__ 1
+#ifndef __RWS_MEMORY_H__
+#define __RWS_MEMORY_H__ 1
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "common.h"
+#include "rws_common.h"
 
-#if defined(_MSC_VER)
-// Disable warning 4996, sprintf_s, not all, but this
-#pragma warning(disable : 4996)
-#endif
+// size > 0 => malloc
+void * rws_malloc(const size_t size);
 
-char * rws_string_copy(const char * str);
+// size > 0 => malloc
+void * rws_malloc_zero(const size_t size);
 
-char * rws_string_copy_len(const char * str, const size_t len);
+void rws_free(void * mem);
 
-void rws_string_delete(char * str);
-
-void rws_string_delete_clean(char ** str);
+void rws_free_clean(void ** mem);
 
 #endif

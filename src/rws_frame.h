@@ -25,7 +25,7 @@
 #define __RWS_FRAME_H__ 1
 
 #include "../librws.h"
-#include "common.h"
+#include "rws_common.h"
 
 typedef enum _rws_opcode
 {

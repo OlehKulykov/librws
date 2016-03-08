@@ -29,11 +29,11 @@ project(librws)
 set(PACKAGE "librws")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "2")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "info@resident.name")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.1.0")
+set(SOVERSION "1.2.0")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -140,16 +140,16 @@ endif(NOT DEFINED CMAKE_INSTALL_LIBDIR)
 include_directories(${PROJECT_BINARY_DIR})
 
 
-set(LIBRWS_SOURCES src/common.c
-		src/error.c
-		src/frame.c
+set(LIBRWS_SOURCES src/rws_common.c
+		src/rws_error.c
+		src/rws_frame.c
 		src/librws.c
-		src/list.c
-		src/memory.c
-		src/socketpriv.c
-		src/socketpub.c
-		src/string.c
-		src/thread.c)
+		src/rws_list.c
+		src/rws_memory.c
+		src/rws_socketpriv.c
+		src/rws_socketpub.c
+		src/rws_string.c
+		src/rws_thread.c)
 				
 
 set(LIBRWS_HEADERS librws.h)

@@ -22,9 +22,9 @@
 
 
 #include "../librws.h"
-#include "socket.h"
-#include "memory.h"
-#include "string.h"
+#include "rws_socket.h"
+#include "rws_memory.h"
+#include "rws_string.h"
 
 #define RWS_CONNECT_RETRY_DELAY 200
 #define RWS_CONNECT_ATTEMPS 5
@@ -139,7 +139,7 @@ rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_s
 #if defined(RWS_OS_WINDOWS)
 	sended = send(s->socket, (const char *)data, data_size, 0);
 #else
-	sended = send(s->socket, data, data_size, 0);
+	sended = (int)send(s->socket, data, (int)data_size, 0);
 #endif
 	error_number = errno;
 
@@ -165,7 +165,7 @@ rws_bool rws_socket_recv(_rws_socket * s)
 	while (is_reading)
 	{
 		errno = -1;
-		len = recv(s->socket, buff, 8192, 0);
+		len = (int)recv(s->socket, buff, 8192, 0);
 		error_number = errno;
 		if (len > 0)
 		{

@@ -24,7 +24,7 @@
 #ifndef __RWS_SOCKET_H__
 #define __RWS_SOCKET_H__ 1
 
-#include "common.h"
+#include "rws_common.h"
 
 #if defined(RWS_OS_WINDOWS)
 #include <winsock2.h>
@@ -41,10 +41,10 @@
 #include <assert.h>
 #include <errno.h>
 
-#include "error.h"
-#include "thread.h"
-#include "frame.h"
-#include "list.h"
+#include "rws_error.h"
+#include "rws_thread.h"
+#include "rws_frame.h"
+#include "rws_list.h"
 
 #if defined(RWS_OS_WINDOWS)
 typedef SOCKET rws_socket_t;

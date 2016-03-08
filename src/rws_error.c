@@ -21,42 +21,61 @@
  */
 
 
-#include "list.h"
-#include "memory.h"
+#include "../librws.h"
+#include "rws_error.h"
+#include "rws_string.h"
+#include "rws_memory.h"
 
-_rws_list * rws_list_create(void)
+
+// private
+_rws_error * rws_error_create(void)
 {
-	return (_rws_list *)rws_malloc_zero(sizeof(_rws_list));
+	_rws_error * e = (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
+	return e;
 }
 
-void rws_list_delete(_rws_list * list)
+_rws_error * rws_error_new_code_descr(const int code, const char * description)
 {
-	_rws_list * cur = list;
-	while (cur)
+	_rws_error * e = (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
+	e->code = code;
+	e->description = rws_string_copy(description);
+	return e;
+}
+
+void rws_error_delete(_rws_error * error)
+{
+	if (error)
 	{
-		_rws_list * prev = cur;
-		cur = cur->next;
-		rws_free(prev);
+		rws_string_delete(error->description);
+		rws_free(error);
 	}
 }
 
-void rws_list_delete_clean(_rws_list ** list)
+void rws_error_delete_clean(_rws_error ** error)
 {
-	if (list)
+	if (error)
 	{
-		rws_list_delete(*list);
-		*list = NULL;
+		rws_error_delete(*error);
+		*error = NULL;
 	}
 }
 
-void rws_list_append(_rws_list * list, _rws_node_value value)
+// public
+int rws_error_get_code(rws_error error)
 {
-	if (list)
-	{
-		_rws_list * cur = list;
-		while (cur->next) cur = cur->next;
-		cur->next = (_rws_node *)rws_malloc_zero(sizeof(_rws_node));
-		cur->next->value = value;
-	}
+	_rws_error * e = (_rws_error *)error;
+	return e ? e->code : 0;
+}
+
+int rws_error_get_http_error(rws_error error)
+{
+	_rws_error * e = (_rws_error *)error;
+	return e ? e->http_error : 0;
+}
+
+const char * rws_error_get_description(rws_error error)
+{
+	_rws_error * e = (_rws_error *)error;
+	return e ? e->description : NULL;
 }
 

@@ -22,9 +22,9 @@
 
 
 #include "../librws.h"
-#include "thread.h"
-#include "memory.h"
-#include "common.h"
+#include "rws_thread.h"
+#include "rws_memory.h"
+#include "rws_common.h"
 
 #include <assert.h>
 
