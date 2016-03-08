@@ -350,7 +350,7 @@ void rws_socket_send_handshake(_rws_socket * s)
 //	ptr += sprintf(ptr, "Host: %s\r\n", s->host);
 
 	if (s->port == 80) { writed += rws_sprintf(ptr, 512 - writed, "Host: %s\r\n", s->host); ptr += writed; }
-	else { writed += rws_sprintf(ptr, "Host: %s:%i\r\n", s->host, s->port); ptr += writed; }
+	else { writed += rws_sprintf(ptr, 512 - writed, "Host: %s:%i\r\n", s->host, s->port); ptr += writed; }
 
 	writed += rws_sprintf(ptr, 512 - writed,
 						  "Upgrade: websocket\r\n"
