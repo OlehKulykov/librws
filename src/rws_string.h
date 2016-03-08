@@ -30,8 +30,9 @@
 #include "rws_common.h"
 
 #if defined(_MSC_VER)
-// Disable warning 4996, sprintf_s, not all, but this
-#pragma warning(disable : 4996)
+#define rws_sprintf(s,l,f,...) sprintf_s(s,l,f,__VA_ARGS__)
+#else
+#define rws_sprintf(s,l,f,...) sprintf(s,f,__VA_ARGS__)
 #endif
 
 char * rws_string_copy(const char * str);
