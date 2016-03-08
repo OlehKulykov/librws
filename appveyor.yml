@@ -1,34 +1,90 @@
-version: 0.0.1.{build}
+version: 1.2.0.{build}
+
+
+os: Visual Studio 2015
+
 
 environment:
   matrix:
     - rws_env_matrix: default
 
-      
+
+# Do not build on tags (GitHub only)
+skip_tags: true
+
+
 # branches to build
 branches:
   only:
   - master
   - dev
 
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform:
-  - x86
-  - x64
 
-configuration:
-  - Release
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+#platform:
+#  - x86
+#  - x64
+
+
+environment:
+  CMAKE_ARGS: -DCMAKE_BUILD_TYPE=Release
+
+  matrix:
+  - platform: x86
+    CMAKE_ARGS: -G"Visual Studio 14" -DRWS_OPT_APPVEYOR_CI=ON -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\librws\librws-install-win-%PLATFORM% -DCMAKE_BUILD_TYPE=Release
+
+  - platform: x64
+    CMAKE_ARGS: -G"Visual Studio 14 Win64" -DRWS_OPT_APPVEYOR_CI=ON -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\librws\librws-install-win-%PLATFORM% -DCMAKE_BUILD_TYPE=Release
+
+
+configuration: Release
+
 
 # clone directory
 clone_folder: c:\dev\librws
 
+
+# scripts that run after cloning repository
+install:
+  - cd c:\dev\librws
+  - md librws-install-win-%PLATFORM%
+
+
 build:
+  parallel: true
+  verbosity: detailed
+
+
+build:
+
 
 build_script:
   - cd c:\dev\librws
   - md build
   - cd build
-  - cmake -DRWS_OPT_APPVEYOR_CI=ON -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\librws\librws-install-dir  -DCMAKE_BUILD_TYPE=Release ..
+  - cmake %CMAKE_ARGS% ..
   - cmake --build . --config Release
   - cmake --build . --config Release --target Install
- # - ctest
+  - cd ..
+
+
+after_build:
+  - 7z a -t7z -mx=9 librws-win-%PLATFORM%-%APPVEYOR_REPO_BRANCH%-%APPVEYOR_BUILD_VERSION%.7z c:\dev\librws\librws-install-win-%PLATFORM%
+
+
+artifacts:
+  - path: '*.7z'
+
+
+deploy:
+  - provider: GitHub
+    release: $(appveyor_build_version)
+    description: 'Appveyor CI build artifacts. Compressed install path with binaries, libraries and configured headers'
+    auth_token:
+      secure: r9lXUEYpmTqZpks3eNZTyWHHka0im0x3NgWpGYSH9uUoWcNatA/cqTGsntk/S5uf
+    artifact: /.*\.7z/
+    draft: false
+    prerelease: true
+    on:
+      branch: master
+
