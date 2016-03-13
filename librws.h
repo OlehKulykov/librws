@@ -30,7 +30,7 @@
 
 #define RWS_VERSION_MAJOR 1
 #define RWS_VERSION_MINOR 2
-#define RWS_VERSION_PATCH 0
+#define RWS_VERSION_PATCH 1
 
 
 // check windows
