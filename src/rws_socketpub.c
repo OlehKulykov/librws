@@ -45,7 +45,7 @@ rws_bool rws_socket_connect(rws_socket socket)
 	if (!s->host) params_error_msg = "No URL host provided";
 	if (!s->path) params_error_msg = "No URL path provided";
 	if (!s->on_disconnected) params_error_msg = "No on_disconnected callback provided";
-
+    s->received_len = 0;
 	if (params_error_msg)
 	{
 		s->error = rws_error_new_code_descr(rws_error_code_missed_parameter, params_error_msg);

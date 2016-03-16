@@ -41,13 +41,14 @@ typedef struct _rws_frame_struct
 {
 	void * data;
 	size_t data_size;
-	size_t expected_size;
 	rws_opcode opcode;
 	unsigned char mask[4];
 	rws_bool is_masked;
 	rws_bool is_finished;
 	unsigned char header_size;
 } _rws_frame;
+
+unsigned int rws_check_recv_frame_size(const void *data,const size_t data_size);
 
 _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t data_size);
 

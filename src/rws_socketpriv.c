@@ -29,6 +29,11 @@
 #define RWS_CONNECT_RETRY_DELAY 200
 #define RWS_CONNECT_ATTEMPS 5
 
+#ifndef  RWS_OS_WINDOWS 
+#define	WSAEWOULDBLOCK  EAGAIN	
+#define	WSAEINPROGRESS     EINPROGRESS	
+#endif
+
 unsigned int rws_socket_get_next_message_id(_rws_socket * s)
 {
 	const unsigned int mess_id = ++s->next_message_id;
@@ -99,7 +104,7 @@ void rws_socket_read_handshake_responce_value(const char * str, char ** value)
 rws_bool rws_socket_process_handshake_responce(_rws_socket * s)
 {
 	const char * str = (const char *)s->received;
-	char * sub = NULL;
+	const char * sub = NULL;
 	float http_ver = -1;
 	int http_code = -1;
 
@@ -135,13 +140,15 @@ rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_s
 	int sended = -1, error_number = -1;
 	rws_error_delete_clean(&s->error);
 
-	errno = -1;
+	//errno = -1;
 #if defined(RWS_OS_WINDOWS)
 	sended = send(s->socket, (const char *)data, data_size, 0);
+    error_number = WSAGetLastError();
 #else
 	sended = (int)send(s->socket, data, (int)data_size, 0);
+    error_number = errno;
 #endif
-	error_number = errno;
+
 
 	if (sended > 0) return rws_true;
 
@@ -161,18 +168,20 @@ rws_bool rws_socket_recv(_rws_socket * s)
 	size_t total_len = 0;
 	char buff[8192];
 	rws_error_delete_clean(&s->error);
-	s->received_len = 0;
 	while (is_reading)
 	{
-		errno = -1;
 		len = (int)recv(s->socket, buff, 8192, 0);
-		error_number = errno;
+#if defined(RWS_OS_WINDOWS)
+        error_number = WSAGetLastError();
+#else
+        error_number = errno;
+#endif
 		if (len > 0)
 		{
 			total_len += len;
-			if (s->received_size < total_len)
+			if (s->received_size-s->received_len < len)
 			{
-				rws_socket_resize_received(s, total_len);
+				rws_socket_resize_received(s, s->received_size+len);
 			}
 			received = (char *)s->received;
 			if (s->received_len) received += s->received_len;
@@ -184,8 +193,8 @@ rws_bool rws_socket_recv(_rws_socket * s)
 			is_reading = 0;
 		}
 	}
-	if (error_number < 0) return rws_true;
-	if (error_number != EWOULDBLOCK && error_number != EAGAIN)
+	//if (error_number < 0) return rws_true;
+	if (error_number != WSAEWOULDBLOCK && error_number != WSAEINPROGRESS)
 	{
 		s->error = rws_error_new_code_descr(rws_error_code_read_write_socket, "Failed read/write socket");
 		rws_socket_close(s);
@@ -204,7 +213,8 @@ _rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const 
 		frame = (_rws_frame *)cur->value.object;
 		if (frame)
 		{
-			if (!frame->is_finished && frame->opcode == opcode) last = frame;
+            //  [FIN=0,opcode !=0 ],[FIN=0,opcode ==0 ],....[FIN=1,opcode ==0 ]
+			if (!frame->is_finished /*&& frame->opcode == opcode*/) last = frame;
 		}
 		cur = cur->next;
 	}
@@ -241,7 +251,7 @@ void rws_socket_process_conn_close_frame(_rws_socket * s, _rws_frame * frame)
 {
 	s->command = COMMAND_INFORM_DISCONNECTED;
 	s->error = rws_error_new_code_descr(rws_error_code_connection_closed, "Connection was closed by endpoint");
-	rws_socket_close(s);
+	//rws_socket_close(s);
 	rws_frame_delete(frame);
 }
 
@@ -252,6 +262,7 @@ void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame)
 		case rws_opcode_ping: rws_socket_process_ping_frame(s, frame); break;
 		case rws_opcode_text_frame:
 		case rws_opcode_binary_frame:
+        case rws_opcode_continuation:
 			rws_socket_process_bin_or_text_frame(s, frame);
 			break;
 		case rws_opcode_connection_close: rws_socket_process_conn_close_frame(s, frame); break;
@@ -273,8 +284,25 @@ void rws_socket_idle_recv(_rws_socket * s)
 		return;
 	}
 
-	frame = rws_frame_create_with_recv_data(s->received, s->received_len);
-	if (frame) rws_socket_process_received_frame(s, frame);
+   unsigned int nframe_size = rws_check_recv_frame_size(s->received,s->received_len);
+   if( nframe_size )
+   {
+       frame = rws_frame_create_with_recv_data(s->received, nframe_size);
+       if (frame) 
+       {
+           rws_socket_process_received_frame(s, frame);
+       }
+       if( nframe_size == s->received_len)
+       {
+           s->received_len = 0;
+       }
+       else if( s->received_len > nframe_size)
+       {
+           unsigned int nLeftLen = s->received_len-nframe_size;
+           memmove((char*)s->received,(char*)s->received+nframe_size,nLeftLen);
+           s->received_len = nLeftLen;
+       }
+   }
 }
 
 void rws_socket_idle_send(_rws_socket * s)
@@ -313,6 +341,7 @@ void rws_socket_wait_handshake_responce(_rws_socket * s)
 
 	if (rws_socket_process_handshake_responce(s))
 	{
+        s->received_len = 0;
 		s->is_connected = rws_true;
 		s->command = COMMAND_INFORM_CONNECTED;
 	}
@@ -342,6 +371,7 @@ void rws_socket_send_disconnect(_rws_socket * s)
 
 void rws_socket_send_handshake(_rws_socket * s)
 {
+
 	char buff[512];
 	char * ptr = buff;
 	size_t writed = 0;
@@ -451,6 +481,7 @@ void rws_socket_connect_to_host(_rws_socket * s)
 
 				if (connect(sock, p->ai_addr, p->ai_addrlen) == 0)
 				{
+                    s->received_len = 0;
 					s->socket = sock;
 #if defined(RWS_OS_WINDOWS)
 					// If iMode != 0, non-blocking mode is enabled.
@@ -512,8 +543,14 @@ static void rws_socket_work_th_func(void * user_object)
 				if (s->on_connected) s->on_connected(s);
 				break;
 			case COMMAND_INFORM_DISCONNECTED:
-				s->command = COMMAND_END;
-				if (s->on_disconnected) s->on_disconnected(s);
+                {
+                    s->command = COMMAND_END;
+                    rws_socket_send_disconnect(s);
+                    if (s->on_disconnected) 
+                    {
+                        s->on_disconnected(s);
+                    }
+                }
 				break;
 			case COMMAND_IDLE:
 				if (s->recvd_frames) rws_socket_inform_recvd_frames(s);
@@ -559,6 +596,7 @@ void rws_socket_resize_received(_rws_socket * s, const size_t size)
 
 void rws_socket_close(_rws_socket * s)
 {
+    s->received_len = 0;
 	if (s->socket != RWS_INVALID_SOCKET)
 	{
 		RWS_SOCK_CLOSE(s->socket);
@@ -646,7 +684,7 @@ void rws_socket_check_write_error(_rws_socket * s, int error_num)
 	if (s->socket != RWS_INVALID_SOCKET)
 	{
 #if defined(RWS_OS_WINDOWS)
-		if (getsockopt(s->socket, SOL_SOCKET, SO_ERROR, (char *)&socket_code, &socket_code_size) != 0) socket_code = 0;
+		if (getsockopt(s->socket, SOL_SOCKET, SO_ERROR, (char *)&socket_code, (int*)&socket_code_size) != 0) socket_code = 0;
 #else
 		if (getsockopt(s->socket, SOL_SOCKET, SO_ERROR, &socket_code, &socket_code_size) != 0) socket_code = 0;
 #endif
