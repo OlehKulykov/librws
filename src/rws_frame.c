@@ -93,14 +93,9 @@ _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t dat
 
 		if (opcode == rws_opcode_connection_close || opcode == rws_opcode_pong) return frame;
 
-		if (!is_finshd || (data_size < (expected_size + header_size)))
+		if (!is_finshd )
 		{
 			frame->is_finished = rws_false;
-			frame->data = rws_malloc(data_size);
-			frame->data_size = data_size;
-			frame->expected_size = expected_size;
-			memcpy(frame->data, data, data_size);
-			return frame;
 		}
 
 		if (expected_size > 0)
@@ -241,4 +236,53 @@ void rws_frame_delete_clean(_rws_frame ** f)
 		*f = NULL;
 	}
 }
+
+unsigned int rws_check_recv_frame_size( const void *data ,const size_t data_size)
+{
+    if (data && data_size >= 2)
+    {
+        const unsigned char * udata = (const unsigned char *)data;
+        const unsigned int is_finshd = (udata[0] >> 7) & 0x01;
+        const unsigned int is_masked = (udata[1] >> 7) & 0x01;
+        const unsigned int payload = udata[1] & 0x7f;
+        unsigned int header_size = is_masked ? 6 : 2;
+
+        unsigned int expected_size = 0;
+      
+
+        switch (payload)
+        {
+        case 126: header_size += 2; break;
+        case 127: header_size += 8; break;
+        default: break;
+        }
+        if (data_size < header_size) return 0;
+
+        switch (payload)
+        {
+        case 126:
+            expected_size |= ((unsigned int)udata[2]) << 8;
+            expected_size |= (unsigned int)udata[3];
+            break;
+
+        case 127:
+            expected_size |= ((unsigned int)udata[6]) << 24;
+            expected_size |= ((unsigned int)udata[7]) << 16;
+            expected_size |= ((unsigned int)udata[8]) << 8;
+            expected_size |= (unsigned int)udata[9];
+            break;
+
+        default:
+            if (payload <= 125)
+            {
+                expected_size = payload;
+            }
+            break;
+        }
+        unsigned int nPackSize = expected_size+header_size;
+        return (nPackSize <= data_size)?nPackSize:0;
+    }
+    return 0;
+}
+
 
