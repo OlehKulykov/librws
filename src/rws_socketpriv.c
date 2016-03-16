@@ -284,22 +284,22 @@ void rws_socket_idle_recv(_rws_socket * s)
 		return;
 	}
 
-   unsigned int nframe_size = rws_check_recv_frame_size(s->received,s->received_len);
-   if( nframe_size )
+   const size_t nframe_size = rws_check_recv_frame_size(s->received, s->received_len);
+   if (nframe_size)
    {
        frame = rws_frame_create_with_recv_data(s->received, nframe_size);
        if (frame) 
        {
            rws_socket_process_received_frame(s, frame);
        }
-       if( nframe_size == s->received_len)
+       if (nframe_size == s->received_len)
        {
            s->received_len = 0;
        }
-       else if( s->received_len > nframe_size)
+       else if (s->received_len > nframe_size)
        {
-           unsigned int nLeftLen = s->received_len-nframe_size;
-           memmove((char*)s->received,(char*)s->received+nframe_size,nLeftLen);
+           const size_t nLeftLen = s->received_len - nframe_size;
+           memmove((char*)s->received, (char*)s->received + nframe_size, nLeftLen);
            s->received_len = nLeftLen;
        }
    }

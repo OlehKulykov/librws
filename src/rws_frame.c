@@ -237,12 +237,12 @@ void rws_frame_delete_clean(_rws_frame ** f)
 	}
 }
 
-unsigned int rws_check_recv_frame_size( const void *data ,const size_t data_size)
+size_t rws_check_recv_frame_size( const void *data ,const size_t data_size)
 {
     if (data && data_size >= 2)
     {
         const unsigned char * udata = (const unsigned char *)data;
-        const unsigned int is_finshd = (udata[0] >> 7) & 0x01;
+//        const unsigned int is_finshd = (udata[0] >> 7) & 0x01;
         const unsigned int is_masked = (udata[1] >> 7) & 0x01;
         const unsigned int payload = udata[1] & 0x7f;
         unsigned int header_size = is_masked ? 6 : 2;
