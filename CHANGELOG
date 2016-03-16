@@ -1,4 +1,7 @@
-Changes on version 1.2.1 (current):
+Changes on version 1.2.2 (current):
+- Fix problem with TCP transmission stick package. Thanks to ljia310.
+
+Changes on version 1.2.1:
 - Fix allocating string memory.
 
 Changes on version 1.2.0:
