@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
 # Common settings
   s.name         = "librws"
-  s.version      = "1.2.2"
+  s.version      = "1.2.3"
   s.summary      = " Tiny, cross platform websocket client C library"
   s.description  = <<-DESC
 Tiny, cross platform websocket client C library.
