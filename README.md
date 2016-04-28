@@ -1,7 +1,8 @@
 # librws -  Tiny, cross platform websocket client C library. 
 
-[![CocoaPods](https://img.shields.io/cocoapods/p/librws.svg?style=flat)](https://cocoapods.org/pods/librws)
-[![CocoaPods](https://img.shields.io/cocoapods/v/librws.svg?style=flat)](https://cocoapods.org/pods/librws)
+[![Platform](https://img.shields.io/cocoapods/p/librws.svg?style=flat)](http://cocoapods.org/pods/librws)
+[![Version](https://img.shields.io/cocoapods/v/librws.svg?style=flat)](http://cocoapods.org/pods/librws)
+[![License](https://img.shields.io/cocoapods/l/librws.svg?style=flat)](http://cocoapods.org/pods/librws)
 [![Build Status](https://travis-ci.org/OlehKulykov/librws.svg?branch=master)](https://travis-ci.org/OlehKulykov/librws) 
 [![Build status](https://ci.appveyor.com/api/projects/status/9f8032rmlbrtaa9o?svg=true)](https://ci.appveyor.com/project/OlehKulykov/librws)
 
