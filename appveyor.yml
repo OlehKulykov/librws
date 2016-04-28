@@ -73,7 +73,7 @@ deploy:
     release: $(appveyor_build_version)
     description: 'Appveyor CI build artifacts. Compressed install path with binaries, libraries and configured headers'
     auth_token:
-      secure: r9lXUEYpmTqZpks3eNZTyWHHka0im0x3NgWpGYSH9uUoWcNatA/cqTGsntk/S5uf
+      secure: 9fCOXiEygRERkV9JN67Rqq6WFwdbSBIllYdZGYcSoFPj1oUAxk3aRi+bWv04l7M5
     artifact: /.*\.7z/
     draft: false
     prerelease: true
