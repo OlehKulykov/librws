@@ -372,28 +372,50 @@ RWS_API(int) rws_error_get_code(rws_error error);
 RWS_API(int) rws_error_get_http_error(rws_error error);
 
 
+/**
+ @brief Get description of the error object.
+ */
 RWS_API(const char *) rws_error_get_description(rws_error error);
 
 
 // mutex
 
+/**
+ @brief Creates recursive mutex object.
+ */
 RWS_API(rws_mutex) rws_mutex_create_recursive(void);
 
 
+/**
+ @brief Lock mutex object.
+ */
 RWS_API(void) rws_mutex_lock(rws_mutex mutex);
 
 
+/**
+ @brief Unlock mutex object.
+ */
 RWS_API(void) rws_mutex_unlock(rws_mutex mutex);
 
 
+
+/**
+ @brief Unlock mutex object.
+ */
 RWS_API(void) rws_mutex_delete(rws_mutex mutex);
 
 
 // thread
 
+/**
+ @brief Create thread object that start immidiatelly.
+ */
 RWS_API(rws_thread) rws_thread_create(rws_thread_funct thread_function, void * user_object);
 
 
+/**
+ @brief Pause current thread for a number of milliseconds.
+ */
 RWS_API(void) rws_thread_sleep(const unsigned int millisec);
 
 #endif
