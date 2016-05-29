@@ -2,16 +2,16 @@ LOCAL_PATH:= $(call my-dir)
 
 
 ALL_SOURCES := \
-	../../../src/common.c \
-	../../../src/error.c \
-	../../../src/frame.c \
+	../../../src/rws_common.c \
+	../../../src/rws_error.c \
+	../../../src/rws_frame.c \
 	../../../src/librws.c \
-	../../../src/list.c \
-	../../../src/memory.c \
-	../../../src/socketpriv.c \
-	../../../src/socketpub.c \
-	../../../src/string.c \
-	../../../src/thread.c
+	../../../src/rws_list.c \
+	../../../src/rws_memory.c \
+	../../../src/rws_socketpriv.c \
+	../../../src/rws_socketpub.c \
+	../../../src/rws_string.c \
+	../../../src/rws_thread.c
 
 
 ALL_INCLUDES := $(LOCAL_PATH)/../../../
