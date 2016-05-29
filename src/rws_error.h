@@ -24,7 +24,7 @@
 #ifndef __RWS_ERROR_H__
 #define __RWS_ERROR_H__ 1
 
-#include "string.h"
+#include "rws_string.h"
 
 typedef struct _rws_error_struct
 {

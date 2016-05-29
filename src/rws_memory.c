@@ -21,7 +21,7 @@
  */
 
 
-#include "memory.h"
+#include "rws_memory.h"
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
