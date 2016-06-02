@@ -176,7 +176,7 @@ rws_mutex rws_mutex_create_recursive(void)
 void rws_mutex_lock(rws_mutex mutex)
 {
 #if defined(RWS_OS_WINDOWS)
-	if (mutex) TryEnterCriticalSection((LPCRITICAL_SECTION)mutex);
+	if (mutex) EnterCriticalSection((LPCRITICAL_SECTION)mutex);
 #else
 	if (mutex) pthread_mutex_lock((pthread_mutex_t *)mutex);
 #endif
