@@ -40,8 +40,7 @@
 #undef CMAKE_BUILD
 #endif
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 	const char * scheme = "ws";
 	const char * host = "echo.websocket.org";
 	const char * path = "/";

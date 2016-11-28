@@ -43,8 +43,7 @@
 
 static rws_socket _socket = NULL;
 
-static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length)
-{
+static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length) {
 	char buff[8*1024];
 	memcpy(buff, text, length);
 	buff[length] = 0;
@@ -52,8 +51,7 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 	printf("\nSocket text: %s", text);
 }
 
-static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length)
-{
+static void on_socket_received_bin(rws_socket socket, const void * data, const unsigned int length) {
 	char buff[8*1024];
 	memcpy(buff, data, length);
 	buff[length] = 0;
@@ -61,8 +59,7 @@ static void on_socket_received_bin(rws_socket socket, const void * data, const u
 	printf("\nSocket bin: <%s>", buff);
 }
 
-static void on_socket_connected(rws_socket socket)
-{
+static void on_socket_connected(rws_socket socket) {
 	const char * test_send_text =
 	"{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
 
@@ -71,19 +68,16 @@ static void on_socket_connected(rws_socket socket)
 	rws_socket_send_text(socket, test_send_text);
 }
 
-static void on_socket_disconnected(rws_socket socket)
-{
+static void on_socket_disconnected(rws_socket socket) {
 	rws_error error = rws_socket_get_error(socket);
-	if (error)
-	{
+	if (error) {
 		printf("\nSocket disconnect with code, error: %i, %s",
 			  rws_error_get_code(error),
 			  rws_error_get_description(error));
 	}
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 	_socket = rws_socket_create(); // create and store socket handle
 	assert(_socket);
 

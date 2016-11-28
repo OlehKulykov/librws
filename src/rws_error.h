@@ -26,8 +26,7 @@
 
 #include "rws_string.h"
 
-typedef struct _rws_error_struct
-{
+typedef struct _rws_error_struct {
 	int code;
 	int http_error;
 	char * description;

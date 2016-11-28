@@ -27,8 +27,7 @@
 #include "../librws.h"
 #include "rws_common.h"
 
-typedef enum _rws_opcode
-{
+typedef enum _rws_opcode {
 	rws_opcode_continuation = 0x0, // %x0 denotes a continuation frame
 	rws_opcode_text_frame = 0x1, // %x1 denotes a text frame
 	rws_opcode_binary_frame = 0x2, // %x2 denotes a binary frame
@@ -37,8 +36,7 @@ typedef enum _rws_opcode
 	rws_opcode_pong = 0xA // %xA denotes a pong
 } rws_opcode;
 
-typedef struct _rws_frame_struct
-{
+typedef struct _rws_frame_struct {
 	void * data;
 	size_t data_size;
 	rws_opcode opcode;
@@ -64,4 +62,4 @@ void rws_frame_delete(_rws_frame * f);
 
 void rws_frame_delete_clean(_rws_frame ** f);
 
-#endif 
+#endif

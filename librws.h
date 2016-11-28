@@ -280,7 +280,7 @@ RWS_API(rws_bool) rws_socket_connect(rws_socket socket);
 
 
 /**
- @brief Disconnect socket. 
+ @brief Disconnect socket.
  @detailed Cleanup prev. send messages and start disconnection sequence.
  SHOULD forget about this socket handle and don't use it anymore.
  @warning Don't use this socket object handler after this command.
@@ -338,25 +338,24 @@ RWS_API(void) rws_socket_set_on_received_bin(rws_socket socket, rws_on_socket_re
 
 // error
 
-typedef enum _rws_error_code
-{
+typedef enum _rws_error_code {
 	rws_error_code_none = 0,
-
+	
 	rws_error_code_missed_parameter,
-
+	
 	rws_error_code_send_handshake,
 	rws_error_code_parse_handshake,
 	rws_error_code_read_write_socket,
 	rws_error_code_connect_to_host,
-
+	
 	/**
 	 @brief Connection was closed by endpoint.
 	 Reasons: an endpoint shutting down, an endpoint having received a frame too large, or an
 	 endpoint having received a frame that does not conform to the format expected by the endpoint.
 	 */
 	rws_error_code_connection_closed,
-
-
+	
+	
 } rws_error_code;
 
 

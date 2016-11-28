@@ -28,53 +28,44 @@
 
 
 // private
-_rws_error * rws_error_create(void)
-{
+_rws_error * rws_error_create(void) {
 	_rws_error * e = (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
 	return e;
 }
 
-_rws_error * rws_error_new_code_descr(const int code, const char * description)
-{
+_rws_error * rws_error_new_code_descr(const int code, const char * description) {
 	_rws_error * e = (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
 	e->code = code;
 	e->description = rws_string_copy(description);
 	return e;
 }
 
-void rws_error_delete(_rws_error * error)
-{
-	if (error)
-	{
+void rws_error_delete(_rws_error * error) {
+	if (error) {
 		rws_string_delete(error->description);
 		rws_free(error);
 	}
 }
 
-void rws_error_delete_clean(_rws_error ** error)
-{
-	if (error)
-	{
+void rws_error_delete_clean(_rws_error ** error) {
+	if (error) {
 		rws_error_delete(*error);
 		*error = NULL;
 	}
 }
 
 // public
-int rws_error_get_code(rws_error error)
-{
+int rws_error_get_code(rws_error error) {
 	_rws_error * e = (_rws_error *)error;
 	return e ? e->code : 0;
 }
 
-int rws_error_get_http_error(rws_error error)
-{
+int rws_error_get_http_error(rws_error error) {
 	_rws_error * e = (_rws_error *)error;
 	return e ? e->http_error : 0;
 }
 
-const char * rws_error_get_description(rws_error error)
-{
+const char * rws_error_get_description(rws_error error) {
 	_rws_error * e = (_rws_error *)error;
 	return e ? e->description : NULL;
 }

@@ -24,8 +24,7 @@
 #import <XCTest/XCTest.h>
 #import "librws.h"
 
-@interface connection : XCTestCase
-{
+@interface connection : XCTestCase {
 @private
 	rws_socket * _socket;
 }
@@ -41,12 +40,10 @@
 
 static const char * _testSendText = "{\"version\":\"1.0\",\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0\",\"channel\":\"/meta/handshake\"}";
 
-static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length)
-{
+static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length) {
 	connection * con = (__bridge connection *)rws_socket_get_user_object(socket);
 
-	if (strncmp(text, _testSendText, length) != 0)
-	{
+	if (strncmp(text, _testSendText, length) != 0) {
 		con.isError = YES;
 		con.errorMessage = @"send and echo test/len not equal";
 	}
@@ -54,18 +51,15 @@ static void on_socket_received_text(rws_socket socket, const char * text, const 
 	con.isFinished = YES;
 }
 
-static void on_socket_connected(rws_socket socket)
-{
+static void on_socket_connected(rws_socket socket) {
 	NSLog(@"Socket connected");
 
 	rws_socket_send_text(socket, _testSendText);
 }
 
-static void on_socket_disconnected(rws_socket socket)
-{
+static void on_socket_disconnected(rws_socket socket) {
 	rws_error error = rws_socket_get_error(socket);
-	if (error)
-	{
+	if (error) {
 		NSLog(@"Socket disconnect with code, error: %i, %s",
 			  rws_error_get_code(error),
 			  rws_error_get_description(error));
@@ -77,16 +71,14 @@ static void on_socket_disconnected(rws_socket socket)
 	con.isFinished = YES;
 }
 
-- (void)setUp
-{
+- (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
 
 	_socket = rws_socket_create();
 }
 
-- (void)tearDown
-{
+- (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 
@@ -94,8 +86,7 @@ static void on_socket_disconnected(rws_socket socket)
 	_socket = NULL;
 }
 
-- (void) testConnection
-{
+- (void) testConnection {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
 
@@ -111,8 +102,7 @@ static void on_socket_disconnected(rws_socket socket)
 	self.isFinished = NO;
 	rws_socket_connect(_socket);
 
-	while (self.isWorking)
-	{
+	while (self.isWorking) {
 		rws_thread_sleep(100);
 	}
 	XCTAssertFalse(self.isError, @"error during connection");

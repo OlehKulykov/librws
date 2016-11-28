@@ -26,16 +26,14 @@
 
 #include <stdio.h>
 
-typedef union _rws_node_value_union
-{
+typedef union _rws_node_value_union {
 	void * object;
 	char * string;
 	int int_value;
 	unsigned int uint_value;
 } _rws_node_value;
 
-typedef struct _rws_node_struct
-{
+typedef struct _rws_node_struct {
 	_rws_node_value value;
 	struct _rws_node_struct * next;
 } _rws_node, _rws_list;

@@ -59,8 +59,7 @@ typedef int rws_socket_t;
 static const char * k_rws_socket_min_http_ver = "1.1";
 static const char * k_rws_socket_sec_websocket_accept = "Sec-WebSocket-Accept";
 
-typedef struct _rws_socket_struct
-{
+typedef struct _rws_socket_struct {
 	int port;
 	rws_socket_t socket;
 	char * scheme;

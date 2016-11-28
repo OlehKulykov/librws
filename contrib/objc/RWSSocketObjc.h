@@ -34,7 +34,7 @@
 @required
 /**
  @brief Websocket connected.
- @detailed Connection extablished and handshake done. 
+ @detailed Connection extablished and handshake done.
  Web socket ready to send and receive.
  @param socket Socket object.
  */
@@ -43,7 +43,7 @@
 
 /**
  @brief Socket client disconnected.
- @detailed Internal socket already freed and dealocated. 
+ @detailed Internal socket already freed and dealocated.
  Connect once again.
  @param socket Socket object.
  @param error Disconnect error.
@@ -81,7 +81,7 @@
 /**
  @brief Weak read/write reference to delegate object.
  */
-@property (nonatomic, weak) id<RWSSocketObjcDelegate> delegate;
+@property (nullable, nonatomic, weak) id<RWSSocketObjcDelegate> delegate;
 
 
 /**

@@ -26,10 +26,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-void * rws_malloc(const size_t size)
-{
-	if (size > 0)
-	{
+void * rws_malloc(const size_t size) {
+	if (size > 0) {
 		void * mem = malloc(size);
 		assert(mem);
 		return mem;
@@ -37,29 +35,24 @@ void * rws_malloc(const size_t size)
 	return NULL;
 }
 
-void * rws_malloc_zero(const size_t size)
-{
+void * rws_malloc_zero(const size_t size) {
 	void * mem = rws_malloc(size);
-	if (mem)
-	{
+	if (mem) {
 		memset(mem, 0, size);
 	}
 	return mem;
 }
 
-void rws_free(void * mem)
-{
-	if (mem) free(mem);
+void rws_free(void * mem) {
+	if (mem) {
+		free(mem);
+	}
 }
 
-void rws_free_clean(void ** mem)
-{
-	if (mem)
-	{
+void rws_free_clean(void ** mem) {
+	if (mem) {
 		rws_free(*mem);
 		*mem = NULL;
 	}
 }
-
-
 
