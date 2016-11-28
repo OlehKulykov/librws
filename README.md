@@ -43,22 +43,21 @@ Warning: ```rws_socket_set_on_disconnected``` is required
 ```c
 // Main callbacks functions
 // callback trigered on socket disconnected with/without error
-static void on_socket_disconnected(rws_socket socket) 
-{
+static void on_socket_disconnected(rws_socket socket) {
   // process error
   rws_error error = rws_socket_get_error(socket);
-  if (error) printf("\nSocket disconnect with code, error: %i, %s", rws_error_get_code(error), rws_error_get_description(error));
+  if (error) { 
+    printf("\nSocket disconnect with code, error: %i, %s", rws_error_get_code(error), rws_error_get_description(error)); 
+  }
   // forget about this socket object, due to next disconnection sequence
   _socket = NULL;
 }
 // callback trigered on socket connected and handshake done
-static void on_socket_connected(rws_socket socket)
-{
+static void on_socket_connected(rws_socket socket) {
   printf("\nSocket connected");
 }
 // callback trigered on socket received text
-static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length)
-{
+static void on_socket_received_text(rws_socket socket, const char * text, const unsigned int length) {
   printf("\nSocket text: %s", text);
 }
 ..................
