@@ -114,7 +114,9 @@ rws_bool rws_socket_process_handshake_responce(_rws_socket * s) {
 
 	rws_error_delete_clean(&s->error);
 	sub = strstr(str, "HTTP/");
-	if (!sub) return rws_false;
+	if (!sub) {
+		return rws_false;
+	}
 	
 	sub += 5;
 	if (rws_sscanf(sub, "%f %i", &http_ver, &http_code) != 2) {
@@ -172,14 +174,14 @@ rws_bool rws_socket_recv(_rws_socket * s) {
 	while (is_reading) {
 		len = (int)recv(s->socket, buff, 8192, 0);
 #if defined(RWS_OS_WINDOWS)
-        error_number = WSAGetLastError();
+		error_number = WSAGetLastError();
 #else
-        error_number = errno;
+		error_number = errno;
 #endif
 		if (len > 0) {
 			total_len += len;
-			if (s->received_size-s->received_len < len) {
-				rws_socket_resize_received(s, s->received_size+len);
+			if (s->received_size - s->received_len < len) {
+				rws_socket_resize_received(s, s->received_size + len);
 			}
 			received = (char *)s->received;
 			if (s->received_len) {
@@ -208,7 +210,9 @@ _rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const 
 		frame = (_rws_frame *)cur->value.object;
 		if (frame) {
             //  [FIN=0,opcode !=0 ],[FIN=0,opcode ==0 ],....[FIN=1,opcode ==0 ]
-			if (!frame->is_finished /*&& frame->opcode == opcode*/) last = frame;
+			if (!frame->is_finished /*&& frame->opcode == opcode*/) {
+				last = frame;
+			}
 		}
 		cur = cur->next;
 	}
@@ -299,7 +303,9 @@ void rws_socket_idle_send(_rws_socket * s) {
 		while (cur && s->is_connected && sending) {
 			frame = (_rws_frame *)cur->value.object;
 			cur->value.object = NULL;
-			if (frame) sending = rws_socket_send(s, frame->data, frame->data_size);
+			if (frame) {
+				sending = rws_socket_send(s, frame->data, frame->data_size);
+			}
 			rws_frame_delete(frame);
 			cur = cur->next;
 		}
@@ -356,10 +362,11 @@ void rws_socket_send_handshake(_rws_socket * s) {
 	size_t writed = 0;
 	writed = rws_sprintf(ptr, 512, "GET %s HTTP/%s\r\n", s->path, k_rws_socket_min_http_ver);
 
-//	ptr += sprintf(ptr, "Host: %s\r\n", s->host);
-
-	if (s->port == 80) writed += rws_sprintf(ptr + writed, 512 - writed, "Host: %s\r\n", s->host);
-	else writed += rws_sprintf(ptr + writed, 512 - writed, "Host: %s:%i\r\n", s->host, s->port);
+	if (s->port == 80) {
+		writed += rws_sprintf(ptr + writed, 512 - writed, "Host: %s\r\n", s->host);
+	} else {
+		writed += rws_sprintf(ptr + writed, 512 - writed, "Host: %s:%i\r\n", s->host, s->port);
+	}
 
 	writed += rws_sprintf(ptr + writed, 512 - writed,
 						  "Upgrade: websocket\r\n"
@@ -571,7 +578,9 @@ rws_bool rws_socket_create_start_work_thread(_rws_socket * s) {
 void rws_socket_resize_received(_rws_socket * s, const size_t size) {
 	void * res = NULL;
 	size_t min = 0;
-	if (size == s->received_size) return;
+	if (size == s->received_size) {
+		return;
+	}
 
 	res = rws_malloc(size);
 	assert(res && (size > 0));

@@ -227,7 +227,6 @@ size_t rws_check_recv_frame_size( const void *data ,const size_t data_size) {
 		
 		unsigned int expected_size = 0;
 		
-		
 		switch (payload) {
 			case 126: header_size += 2; break;
 			case 127: header_size += 8; break;

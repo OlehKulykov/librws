@@ -91,19 +91,18 @@ void rws_socket_disconnect_and_release(rws_socket socket) {
 rws_bool rws_socket_send_text(rws_socket socket, const char * text) {
 	_rws_socket * s = (_rws_socket *)socket;
 	rws_bool r = rws_false;
-	if (!s) {
-		return r;
+	if (s) {
+		rws_mutex_lock(s->send_mutex);
+		r = rws_socket_send_text_priv(s, text);
+		rws_mutex_unlock(s->send_mutex);
 	}
-	
-	rws_mutex_lock(s->send_mutex);
-	r = rws_socket_send_text_priv(s, text);
-	rws_mutex_unlock(s->send_mutex);
 	return r;
 }
 
 #if !defined(RWS_OS_WINDOWS)
 void rws_socket_handle_sigpipe(int signal_number) {
 	printf("\nlibrws handle sigpipe %i", signal_number);
+	(void)signal_number;
 	return;
 }
 #endif
@@ -113,6 +112,7 @@ void rws_socket_handle_sigpipe(int signal_number) {
 
 void rws_socket_check_info(const char * info) {
 	assert(info);
+	(void)info;
 }
 
 rws_socket rws_socket_create(void) {
@@ -178,27 +178,26 @@ void rws_socket_set_url(rws_socket socket,
 						const int port,
 						const char * path) {
 	_rws_socket * s = (_rws_socket *)socket;
-	if (!s) {
-		return;
+	if (s) {
+		rws_string_delete(s->scheme);
+		s->scheme = rws_string_copy(scheme);
+		
+		rws_string_delete(s->host);
+		s->host = rws_string_copy(host);
+		
+		rws_string_delete(s->path);
+		s->path = rws_string_copy(path);
+		
+		s->port = port;
 	}
-	
-	rws_string_delete(s->scheme);
-	s->scheme = rws_string_copy(scheme);
-	rws_string_delete(s->host);
-	s->host = rws_string_copy(host);
-	rws_string_delete(s->path);
-	s->path = rws_string_copy(path);
-	s->port = port;
 }
 
 void rws_socket_set_scheme(rws_socket socket, const char * scheme) {
 	_rws_socket * s = (_rws_socket *)socket;
-	if (!s) {
-		return;
+	if (s) {
+		rws_string_delete(s->scheme);
+		s->scheme = rws_string_copy(scheme);
 	}
-	
-	rws_string_delete(s->scheme);
-	s->scheme = rws_string_copy(scheme);
 }
 
 const char * rws_socket_get_scheme(rws_socket socket) {
@@ -208,12 +207,10 @@ const char * rws_socket_get_scheme(rws_socket socket) {
 
 void rws_socket_set_host(rws_socket socket, const char * host) {
 	_rws_socket * s = (_rws_socket *)socket;
-	if (!s) {
-		return;
+	if (s) {
+		rws_string_delete(s->host);
+		s->host = rws_string_copy(host);
 	}
-	
-	rws_string_delete(s->host);
-	s->host = rws_string_copy(host);
 }
 
 const char * rws_socket_get_host(rws_socket socket) {
@@ -223,12 +220,10 @@ const char * rws_socket_get_host(rws_socket socket) {
 
 void rws_socket_set_path(rws_socket socket, const char * path) {
 	_rws_socket * s = (_rws_socket *)socket;
-	if (!s) {
-		return;
+	if (s) {
+		rws_string_delete(s->path);
+		s->path = rws_string_copy(path);
 	}
-	
-	rws_string_delete(s->path);
-	s->path = rws_string_copy(path);
 }
 
 const char * rws_socket_get_path(rws_socket socket) {
@@ -325,13 +320,11 @@ void rws_socket_set_on_received_bin(rws_socket socket, rws_on_socket_recvd_bin c
 rws_bool rws_socket_is_connected(rws_socket socket) {
 	_rws_socket * s = (_rws_socket *)socket;
 	rws_bool r = rws_false;
-	if (!s) {
-		return r;
+	if (s) {
+		rws_mutex_lock(s->send_mutex);
+		r = s->is_connected;
+		rws_mutex_unlock(s->send_mutex);
 	}
-	
-	rws_mutex_lock(s->send_mutex);
-	r = s->is_connected;
-	rws_mutex_unlock(s->send_mutex);
 	return r;
 }
 

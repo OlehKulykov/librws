@@ -29,8 +29,7 @@
 
 // private
 _rws_error * rws_error_create(void) {
-	_rws_error * e = (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
-	return e;
+	return (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
 }
 
 _rws_error * rws_error_new_code_descr(const int code, const char * description) {

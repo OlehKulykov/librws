@@ -66,10 +66,16 @@ static void rws_threads_joiner_clean(void) { // private
 
 #if defined(RWS_OS_WINDOWS)
 	do {
-		if (GetExitCodeThread(t->thread, &dwExitCode) == 0) break; // fail
+		if (GetExitCodeThread(t->thread, &dwExitCode) == 0) {
+			break; // fail
+		}
 	} while (dwExitCode == STILL_ACTIVE);
-	if (dwExitCode == STILL_ACTIVE) TerminateThread(t->thread, 0);
-	if (CloseHandle(t->thread)) t->thread = NULL;
+	if (dwExitCode == STILL_ACTIVE) {
+		TerminateThread(t->thread, 0);
+	}
+	if (CloseHandle(t->thread)) {
+		t->thread = NULL;
+	}
 #else
 	pthread_join(t->thread, &r);
 	assert(r == NULL);
@@ -115,7 +121,9 @@ rws_thread rws_thread_create(rws_thread_funct thread_function, void * user_objec
 	pthread_attr_t attr;
 #endif
 
-	if (!thread_function) return NULL;
+	if (!thread_function) {
+		return NULL;
+	}
 	rws_threads_joiner_create_ifneed();
 	t = (_rws_thread *)rws_malloc_zero(sizeof(_rws_thread));
 	t->user_object = user_object;

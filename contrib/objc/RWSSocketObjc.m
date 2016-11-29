@@ -47,7 +47,9 @@
 	
 	id<RWSSocketObjcDelegate> d = self.delegate;
 	if (d && [d respondsToSelector:@selector(onRWSSocketDisconnected:withError:)]) {
-		dispatch_async(dispatch_get_main_queue(), ^{ [d onRWSSocketDisconnected:self withError:err]; });
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[d onRWSSocketDisconnected:self withError:err];
+		});
 	}
 }
 
@@ -55,7 +57,9 @@ static void onRWSSocketObjcConnected(rws_socket socket) {
 	RWSSocketObjc * s = (__bridge RWSSocketObjc *)rws_socket_get_user_object(socket);
 	id<RWSSocketObjcDelegate> d = s ? [s delegate] : nil;
 	if (d && [d respondsToSelector:@selector(onRWSSocketConnected:)]) {
-		dispatch_async(dispatch_get_main_queue(), ^{ [d onRWSSocketConnected:s]; });
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[d onRWSSocketConnected:s];
+		});
 	}
 }
 
@@ -71,7 +75,9 @@ static void onRWSSocketObjcRecvdText(rws_socket socket, const char * text, const
 	id<RWSSocketObjcDelegate> d = s ? [s delegate] : nil;
 	if (text && length && d && [d respondsToSelector:@selector(onRWSSocket:receivedText:)]) {
 		NSString * t = [NSString stringWithUTF8String:text];
-		dispatch_async(dispatch_get_main_queue(), ^{ [d onRWSSocket:s receivedText:t]; });
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[d onRWSSocket:s receivedText:t];
+		});
 	}
 }
 
@@ -80,7 +86,9 @@ static void onRWSSocketObjcRecvdBin(rws_socket socket, const void * data, const 
 	id<RWSSocketObjcDelegate> d = s ? [s delegate] : nil;
 	if (data && length && d && [d respondsToSelector:@selector(onRWSSocket:receivedData:)]) {
 		NSData * dt = [NSData dataWithBytes:data length:length];
-		dispatch_async(dispatch_get_main_queue(), ^{ [d onRWSSocket:s receivedData:dt]; });
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[d onRWSSocket:s receivedData:dt];
+		});
 	}
 }
 

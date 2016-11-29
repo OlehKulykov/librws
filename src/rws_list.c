@@ -47,7 +47,9 @@ void rws_list_delete_clean(_rws_list ** list) {
 void rws_list_append(_rws_list * list, _rws_node_value value) {
 	if (list) {
 		_rws_list * cur = list;
-		while (cur->next) cur = cur->next;
+		while (cur->next) {
+			cur = cur->next;
+		}
 		cur->next = (_rws_node *)rws_malloc_zero(sizeof(_rws_node));
 		cur->next->value = value;
 	}
