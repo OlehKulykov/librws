@@ -1,4 +1,7 @@
-Changes on version 1.2.2 (current):
+Changes on version 1.2.4 (current):
+- Minor code fixes and change code formatting.
+
+Changes on version 1.2.2:
 - Fix problem with TCP transmission stick package. Thanks to ljia310.
 
 Changes on version 1.2.1:
@@ -15,4 +18,3 @@ Changes on version 1.0.0:
 
 Changes on version 0.0.1:
 - Initial implementation.
-
