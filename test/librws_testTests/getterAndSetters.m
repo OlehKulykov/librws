@@ -26,7 +26,7 @@
 
 @interface getterAndSetters : XCTestCase {
 @private
-	rws_socket * _socket;
+	rws_socket _socket;
 }
 @end
 

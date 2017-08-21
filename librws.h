@@ -104,13 +104,13 @@ typedef void* rws_handle;
 /**
  @brief Socket handle.
  */
-typedef rws_handle rws_socket;
+typedef struct rws_socket_struct * rws_socket;
 
 
 /**
  @brief Error object handle.
  */
-typedef rws_handle rws_error;
+typedef struct rws_error_struct * rws_error;
 
 
 /**
@@ -122,7 +122,7 @@ typedef rws_handle rws_mutex;
 /**
  @brief Thread object handle.
  */
-typedef rws_handle rws_thread;
+typedef struct rws_thread_struct * rws_thread;
 
 
 /**

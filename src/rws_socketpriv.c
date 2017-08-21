@@ -34,7 +34,7 @@
 #define	WSAEINPROGRESS     EINPROGRESS	
 #endif
 
-unsigned int rws_socket_get_next_message_id(_rws_socket * s) {
+unsigned int rws_socket_get_next_message_id(rws_socket s) {
 	const unsigned int mess_id = ++s->next_message_id;
 	if (mess_id > 9999999) {
 		s->next_message_id = 0;
@@ -42,7 +42,7 @@ unsigned int rws_socket_get_next_message_id(_rws_socket * s) {
 	return mess_id;
 }
 
-void rws_socket_send_ping(_rws_socket * s) {
+void rws_socket_send_ping(rws_socket s) {
 	char buff[16];
 	size_t len = 0;
 	_rws_frame * frame = rws_frame_create();
@@ -55,7 +55,7 @@ void rws_socket_send_ping(_rws_socket * s) {
 	rws_socket_append_send_frames(s, frame);
 }
 
-void rws_socket_inform_recvd_frames(_rws_socket * s) {
+void rws_socket_inform_recvd_frames(rws_socket s) {
 	rws_bool is_all_finished = rws_true;
 	_rws_frame * frame = NULL;
 	_rws_node * cur = s->recvd_frames;
@@ -106,7 +106,7 @@ void rws_socket_read_handshake_responce_value(const char * str, char ** value) {
 	}
 }
 
-rws_bool rws_socket_process_handshake_responce(_rws_socket * s) {
+rws_bool rws_socket_process_handshake_responce(rws_socket s) {
 	const char * str = (const char *)s->received;
 	const char * sub = NULL;
 	float http_ver = -1;
@@ -139,7 +139,7 @@ rws_bool rws_socket_process_handshake_responce(_rws_socket * s) {
 }
 
 // need close socket on error
-rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_size) {
+rws_bool rws_socket_send(rws_socket s, const void * data, const size_t data_size) {
 	int sended = -1, error_number = -1;
 	rws_error_delete_clean(&s->error);
 
@@ -165,7 +165,7 @@ rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_s
 	return rws_true;
 }
 
-rws_bool rws_socket_recv(_rws_socket * s) {
+rws_bool rws_socket_recv(rws_socket s) {
 	int is_reading = 1, error_number = -1, len = -1;
 	char * received = NULL;
 	size_t total_len = 0;
@@ -202,7 +202,7 @@ rws_bool rws_socket_recv(_rws_socket * s) {
 	return rws_true;
 }
 
-_rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const rws_opcode opcode) {
+_rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(rws_socket s, const rws_opcode opcode) {
 	_rws_frame * last = NULL;
 	_rws_frame * frame = NULL;
 	_rws_node * cur = s->recvd_frames;
@@ -219,7 +219,7 @@ _rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const 
 	return last;
 }
 
-void rws_socket_process_bin_or_text_frame(_rws_socket * s, _rws_frame * frame) {
+void rws_socket_process_bin_or_text_frame(rws_socket s, _rws_frame * frame) {
 	_rws_frame * last_unfin = rws_socket_last_unfin_recvd_frame_by_opcode(s, frame->opcode);
 	if (last_unfin) {
 		rws_frame_combine_datas(last_unfin, frame);
@@ -232,7 +232,7 @@ void rws_socket_process_bin_or_text_frame(_rws_socket * s, _rws_frame * frame) {
 	}
 }
 
-void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame) {
+void rws_socket_process_ping_frame(rws_socket s, _rws_frame * frame) {
 	_rws_frame * pong_frame = rws_frame_create();
 	pong_frame->opcode = rws_opcode_pong;
 	pong_frame->is_masked = rws_true;
@@ -241,14 +241,14 @@ void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame) {
 	rws_socket_append_send_frames(s, pong_frame);
 }
 
-void rws_socket_process_conn_close_frame(_rws_socket * s, _rws_frame * frame) {
+void rws_socket_process_conn_close_frame(rws_socket s, _rws_frame * frame) {
 	s->command = COMMAND_INFORM_DISCONNECTED;
 	s->error = rws_error_new_code_descr(rws_error_code_connection_closed, "Connection was closed by endpoint");
 	//rws_socket_close(s);
 	rws_frame_delete(frame);
 }
 
-void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame) {
+void rws_socket_process_received_frame(rws_socket s, _rws_frame * frame) {
 	switch (frame->opcode) {
 		case rws_opcode_ping: rws_socket_process_ping_frame(s, frame); break;
 		case rws_opcode_text_frame:
@@ -264,7 +264,7 @@ void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame) {
 	}
 }
 
-void rws_socket_idle_recv(_rws_socket * s) {
+void rws_socket_idle_recv(rws_socket s) {
 	_rws_frame * frame = NULL;
 
 	if (!rws_socket_recv(s)) {
@@ -292,7 +292,7 @@ void rws_socket_idle_recv(_rws_socket * s) {
    }
 }
 
-void rws_socket_idle_send(_rws_socket * s) {
+void rws_socket_idle_send(rws_socket s) {
 	_rws_node * cur = NULL;
 	rws_bool sending = rws_true;
 	_rws_frame * frame = NULL;
@@ -317,7 +317,7 @@ void rws_socket_idle_send(_rws_socket * s) {
 	rws_mutex_unlock(s->send_mutex);
 }
 
-void rws_socket_wait_handshake_responce(_rws_socket * s) {
+void rws_socket_wait_handshake_responce(rws_socket s) {
 	if (!rws_socket_recv(s)) {
 		// sock already closed
 		if (s->error) {
@@ -340,7 +340,7 @@ void rws_socket_wait_handshake_responce(_rws_socket * s) {
 	}
 }
 
-void rws_socket_send_disconnect(_rws_socket * s) {
+void rws_socket_send_disconnect(rws_socket s) {
 	char buff[16];
 	size_t len = 0;
 	_rws_frame * frame = rws_frame_create();
@@ -356,7 +356,7 @@ void rws_socket_send_disconnect(_rws_socket * s) {
 	rws_thread_sleep(RWS_CONNECT_RETRY_DELAY); // little bit wait after send message
 }
 
-void rws_socket_send_handshake(_rws_socket * s) {
+void rws_socket_send_handshake(rws_socket s) {
 	char buff[512];
 	char * ptr = buff;
 	size_t writed = 0;
@@ -394,7 +394,7 @@ void rws_socket_send_handshake(_rws_socket * s) {
 	}
 }
 
-struct addrinfo * rws_socket_connect_getaddr_info(_rws_socket * s) {
+struct addrinfo * rws_socket_connect_getaddr_info(rws_socket s) {
 	struct addrinfo hints;
 	char portstr[16];
 	struct addrinfo * result = NULL;
@@ -447,7 +447,7 @@ struct addrinfo * rws_socket_connect_getaddr_info(_rws_socket * s) {
 	return NULL;
 }
 
-void rws_socket_connect_to_host(_rws_socket * s) {
+void rws_socket_connect_to_host(rws_socket s) {
 	struct addrinfo * result = NULL;
 	struct addrinfo * p = NULL;
 	rws_socket_t sock = RWS_INVALID_SOCKET;
@@ -502,7 +502,7 @@ void rws_socket_connect_to_host(_rws_socket * s) {
 }
 
 static void rws_socket_work_th_func(void * user_object) {
-	_rws_socket * s = (_rws_socket *)user_object;
+	rws_socket s = (rws_socket)user_object;
 	size_t loop_number = 0;
 	while (s->command < COMMAND_END) {
 		loop_number++;
@@ -564,7 +564,7 @@ static void rws_socket_work_th_func(void * user_object) {
 	rws_socket_delete(s);
 }
 
-rws_bool rws_socket_create_start_work_thread(_rws_socket * s) {
+rws_bool rws_socket_create_start_work_thread(rws_socket s) {
 	rws_error_delete_clean(&s->error);
 	s->command = COMMAND_NONE;
 	s->work_thread = rws_thread_create(&rws_socket_work_th_func, s);
@@ -575,7 +575,7 @@ rws_bool rws_socket_create_start_work_thread(_rws_socket * s) {
 	return rws_false;
 }
 
-void rws_socket_resize_received(_rws_socket * s, const size_t size) {
+void rws_socket_resize_received(rws_socket s, const size_t size) {
 	void * res = NULL;
 	size_t min = 0;
 	if (size == s->received_size) {
@@ -594,7 +594,7 @@ void rws_socket_resize_received(_rws_socket * s, const size_t size) {
 	s->received_size = size;
 }
 
-void rws_socket_close(_rws_socket * s) {
+void rws_socket_close(rws_socket s) {
     s->received_len = 0;
 	if (s->socket != RWS_INVALID_SOCKET) {
 		RWS_SOCK_CLOSE(s->socket);
@@ -606,7 +606,7 @@ void rws_socket_close(_rws_socket * s) {
 	s->is_connected = rws_false;
 }
 
-void rws_socket_append_recvd_frames(_rws_socket * s, _rws_frame * frame) {
+void rws_socket_append_recvd_frames(rws_socket s, _rws_frame * frame) {
 	_rws_node_value frame_list_var;
 	frame_list_var.object = frame;
 	if (s->recvd_frames) {
@@ -617,7 +617,7 @@ void rws_socket_append_recvd_frames(_rws_socket * s, _rws_frame * frame) {
 	}
 }
 
-void rws_socket_append_send_frames(_rws_socket * s, _rws_frame * frame) {
+void rws_socket_append_send_frames(rws_socket s, _rws_frame * frame) {
 	_rws_node_value frame_list_var;
 	frame_list_var.object = frame;
 	if (s->send_frames) {
@@ -628,7 +628,7 @@ void rws_socket_append_send_frames(_rws_socket * s, _rws_frame * frame) {
 	}
 }
 
-rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text) {
+rws_bool rws_socket_send_text_priv(rws_socket s, const char * text) {
 	size_t len = text ? strlen(text) : 0;
 	_rws_frame * frame = NULL;
 
@@ -661,7 +661,7 @@ void rws_socket_set_option(rws_socket_t s, int option, int value) {
 	setsockopt(s, SOL_SOCKET, option, (char *)&value, sizeof(int));
 }
 
-void rws_socket_check_write_error(_rws_socket * s, int error_num) {
+void rws_socket_check_write_error(rws_socket s, int error_num) {
 #if defined(RWS_OS_WINDOWS)
 	int socket_code = 0, code = 0;
 	unsigned int socket_code_size = sizeof(int);

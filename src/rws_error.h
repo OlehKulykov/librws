@@ -26,18 +26,18 @@
 
 #include "rws_string.h"
 
-typedef struct _rws_error_struct {
+struct rws_error_struct {
 	int code;
 	int http_error;
 	char * description;
-} _rws_error;
+};
 
-_rws_error * rws_error_create(void);
+rws_error rws_error_create(void);
 
-_rws_error * rws_error_new_code_descr(const int code, const char * description);
+rws_error rws_error_new_code_descr(const int code, const char * description);
 
-void rws_error_delete(_rws_error * error);
+void rws_error_delete(rws_error error);
 
-void rws_error_delete_clean(_rws_error ** error);
+void rws_error_delete_clean(rws_error * error);
 
 #endif

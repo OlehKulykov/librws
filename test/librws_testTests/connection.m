@@ -26,7 +26,7 @@
 
 @interface connection : XCTestCase {
 @private
-	rws_socket * _socket;
+	rws_socket _socket;
 }
 
 @property (nonatomic) BOOL isWorking;

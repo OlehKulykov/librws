@@ -59,7 +59,7 @@ typedef int rws_socket_t;
 static const char * k_rws_socket_min_http_ver = "1.1";
 static const char * k_rws_socket_sec_websocket_accept = "Sec-WebSocket-Accept";
 
-typedef struct _rws_socket_struct {
+struct rws_socket_struct {
 	int port;
 	rws_socket_t socket;
 	char * scheme;
@@ -89,69 +89,69 @@ typedef struct _rws_socket_struct {
 	_rws_list * send_frames;
 	_rws_list * recvd_frames;
 
-	_rws_error * error;
+	rws_error error;
 
 	rws_mutex work_mutex;
 	rws_mutex send_mutex;
-} _rws_socket;
+};
 
-rws_bool rws_socket_process_handshake_responce(_rws_socket * s);
+rws_bool rws_socket_process_handshake_responce(rws_socket s);
 
 // receive raw data from socket
-rws_bool rws_socket_recv(_rws_socket * s);
+rws_bool rws_socket_recv(rws_socket s);
 
 // send raw data to socket
-rws_bool rws_socket_send(_rws_socket * s, const void * data, const size_t data_size);
+rws_bool rws_socket_send(rws_socket s, const void * data, const size_t data_size);
 
-_rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(_rws_socket * s, const rws_opcode opcode);
+_rws_frame * rws_socket_last_unfin_recvd_frame_by_opcode(rws_socket s, const rws_opcode opcode);
 
-void rws_socket_process_bin_or_text_frame(_rws_socket * s, _rws_frame * frame);
+void rws_socket_process_bin_or_text_frame(rws_socket s, _rws_frame * frame);
 
-void rws_socket_process_ping_frame(_rws_socket * s, _rws_frame * frame);
+void rws_socket_process_ping_frame(rws_socket s, _rws_frame * frame);
 
-void rws_socket_process_conn_close_frame(_rws_socket * s, _rws_frame * frame);
+void rws_socket_process_conn_close_frame(rws_socket s, _rws_frame * frame);
 
-void rws_socket_process_received_frame(_rws_socket * s, _rws_frame * frame);
+void rws_socket_process_received_frame(rws_socket s, _rws_frame * frame);
 
-void rws_socket_idle_recv(_rws_socket * s);
+void rws_socket_idle_recv(rws_socket s);
 
-void rws_socket_idle_send(_rws_socket * s);
+void rws_socket_idle_send(rws_socket s);
 
-void rws_socket_wait_handshake_responce(_rws_socket * s);
+void rws_socket_wait_handshake_responce(rws_socket s);
 
-unsigned int rws_socket_get_next_message_id(_rws_socket * s);
+unsigned int rws_socket_get_next_message_id(rws_socket s);
 
-void rws_socket_send_ping(_rws_socket * s);
+void rws_socket_send_ping(rws_socket s);
 
-void rws_socket_send_disconnect(_rws_socket * s);
+void rws_socket_send_disconnect(rws_socket s);
 
-void rws_socket_send_handshake(_rws_socket * s);
+void rws_socket_send_handshake(rws_socket s);
 
-struct addrinfo * rws_socket_connect_getaddr_info(_rws_socket * s);
+struct addrinfo * rws_socket_connect_getaddr_info(rws_socket s);
 
-void rws_socket_connect_to_host(_rws_socket * s);
+void rws_socket_connect_to_host(rws_socket s);
 
-rws_bool rws_socket_create_start_work_thread(_rws_socket * s);
+rws_bool rws_socket_create_start_work_thread(rws_socket s);
 
-void rws_socket_close(_rws_socket * s);
+void rws_socket_close(rws_socket s);
 
-void rws_socket_resize_received(_rws_socket * s, const size_t size);
+void rws_socket_resize_received(rws_socket s, const size_t size);
 
-void rws_socket_append_recvd_frames(_rws_socket * s, _rws_frame * frame);
+void rws_socket_append_recvd_frames(rws_socket s, _rws_frame * frame);
 
-void rws_socket_append_send_frames(_rws_socket * s, _rws_frame * frame);
+void rws_socket_append_send_frames(rws_socket s, _rws_frame * frame);
 
-rws_bool rws_socket_send_text_priv(_rws_socket * s, const char * text);
+rws_bool rws_socket_send_text_priv(rws_socket s, const char * text);
 
-void rws_socket_inform_recvd_frames(_rws_socket * s);
+void rws_socket_inform_recvd_frames(rws_socket s);
 
 void rws_socket_set_option(rws_socket_t s, int option, int value);
 
 void rws_socket_delete_all_frames_in_list(_rws_list * list_with_frames);
 
-void rws_socket_check_write_error(_rws_socket * s, int error_num);
+void rws_socket_check_write_error(rws_socket s, int error_num);
 
-void rws_socket_delete(_rws_socket * s);
+void rws_socket_delete(rws_socket s);
 
 #define COMMAND_IDLE -1
 #define COMMAND_NONE 0

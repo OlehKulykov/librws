@@ -35,7 +35,7 @@
 #include <unistd.h>
 #endif
 
-typedef struct _rws_thread_struct {
+struct rws_thread_struct {
 	rws_thread_funct thread_function;
 	void * user_object;
 #if defined(RWS_OS_WINDOWS)
@@ -43,16 +43,16 @@ typedef struct _rws_thread_struct {
 #else
 	pthread_t thread;
 #endif
-} _rws_thread;
+};
 
 typedef struct _rws_threads_joiner_struct {
-	_rws_thread * thread;
+	rws_thread thread;
 	rws_mutex mutex;
 } _rws_threads_joiner;
 
 static _rws_threads_joiner * _threads_joiner = NULL;
 static void rws_threads_joiner_clean(void) { // private
-	_rws_thread * t = _threads_joiner->thread;
+	rws_thread t = _threads_joiner->thread;
 #if defined(RWS_OS_WINDOWS)
 	DWORD dwExitCode = 0;
 #else
@@ -83,7 +83,7 @@ static void rws_threads_joiner_clean(void) { // private
 	rws_free(t);
 }
 
-static void rws_threads_joiner_add(_rws_thread * thread) { // public
+static void rws_threads_joiner_add(rws_thread thread) { // public
 	rws_mutex_lock(_threads_joiner->mutex);
 	rws_threads_joiner_clean();
 	_threads_joiner->thread = thread;
@@ -103,7 +103,7 @@ static DWORD WINAPI rws_thread_func_priv(LPVOID some_pointer) {
 #else
 static void * rws_thread_func_priv(void * some_pointer) {
 #endif
-	_rws_thread * t = (_rws_thread *)some_pointer;
+	rws_thread t = (rws_thread)some_pointer;
 	t->thread_function(t->user_object);
 	rws_threads_joiner_add(t);
 
@@ -115,7 +115,7 @@ static void * rws_thread_func_priv(void * some_pointer) {
 }
 
 rws_thread rws_thread_create(rws_thread_funct thread_function, void * user_object) {
-	_rws_thread * t = NULL;
+	rws_thread t = NULL;
 	int res = -1;
 #if !defined(RWS_OS_WINDOWS)
 	pthread_attr_t attr;
@@ -125,7 +125,7 @@ rws_thread rws_thread_create(rws_thread_funct thread_function, void * user_objec
 		return NULL;
 	}
 	rws_threads_joiner_create_ifneed();
-	t = (_rws_thread *)rws_malloc_zero(sizeof(_rws_thread));
+	t = (rws_thread)rws_malloc_zero(sizeof(struct rws_thread_struct));
 	t->user_object = user_object;
 	t->thread_function = thread_function;
 #if defined(RWS_OS_WINDOWS)

@@ -44,7 +44,7 @@
 {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
-	rws_socket * socket = rws_socket_create();
+	rws_socket socket = rws_socket_create();
 	XCTAssert(socket != NULL, @"Not created");
 	rws_socket_disconnect_and_release(socket);
 

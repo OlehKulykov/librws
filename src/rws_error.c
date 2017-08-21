@@ -28,25 +28,25 @@
 
 
 // private
-_rws_error * rws_error_create(void) {
-	return (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
+rws_error rws_error_create(void) {
+	return (rws_error)rws_malloc_zero(sizeof(struct rws_error_struct));
 }
 
-_rws_error * rws_error_new_code_descr(const int code, const char * description) {
-	_rws_error * e = (_rws_error *)rws_malloc_zero(sizeof(_rws_error));
+rws_error rws_error_new_code_descr(const int code, const char * description) {
+	rws_error e = (rws_error)rws_malloc_zero(sizeof(struct rws_error_struct));
 	e->code = code;
 	e->description = rws_string_copy(description);
 	return e;
 }
 
-void rws_error_delete(_rws_error * error) {
+void rws_error_delete(rws_error error) {
 	if (error) {
 		rws_string_delete(error->description);
 		rws_free(error);
 	}
 }
 
-void rws_error_delete_clean(_rws_error ** error) {
+void rws_error_delete_clean(rws_error * error) {
 	if (error) {
 		rws_error_delete(*error);
 		*error = NULL;
@@ -55,17 +55,14 @@ void rws_error_delete_clean(_rws_error ** error) {
 
 // public
 int rws_error_get_code(rws_error error) {
-	_rws_error * e = (_rws_error *)error;
-	return e ? e->code : 0;
+	return error ? error->code : 0;
 }
 
 int rws_error_get_http_error(rws_error error) {
-	_rws_error * e = (_rws_error *)error;
-	return e ? e->http_error : 0;
+	return error ? error->http_error : 0;
 }
 
 const char * rws_error_get_description(rws_error error) {
-	_rws_error * e = (_rws_error *)error;
-	return e ? e->description : NULL;
+	return error ? error->description : NULL;
 }
 

@@ -46,7 +46,7 @@ typedef struct _rws_frame_struct {
 	unsigned char header_size;
 } _rws_frame;
 
-size_t rws_check_recv_frame_size(const void *data,const size_t data_size);
+size_t rws_check_recv_frame_size(const void * data, const size_t data_size);
 
 _rws_frame * rws_frame_create_with_recv_data(const void * data, const size_t data_size);
 
